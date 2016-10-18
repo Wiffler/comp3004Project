@@ -24,13 +24,21 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
     public CanvasTest(Context context) {
         super(context);
         getHolder().addCallback(this);
+        setFocusable(true);
 
-        // create the game threads
+        // Create the game threads
         gameThread = new CanvasTestMainThread(getHolder(), this);
         audioThread = new CanvasTestAudioThread(context);
         soundPoolThread =  new CanvasTestSoundPoolThread(context);
 
-        setFocusable(true);
+        // Create the objects
+        pauseCircle = new GraphicCircle(0, 0, 100, "#C0C0C0");
+        startCircle = new GraphicCircle(0, 0, 100, "#008000");
+        pauseCircle2 = new GraphicCircle(0, 0, 100, "#C0C0C0");
+        startCircle2 = new GraphicCircle(0, 0, 100, "#008000");
+        tickText = new GraphicText(0, 0, "", "#C0C0C0");
+
+
     }
 
     @Override
@@ -48,12 +56,12 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         // Allow the view to update
         setWillNotDraw(false);
 
-        // Create the objects
-        pauseCircle = new GraphicCircle(getWidth() / 2, getHeight() / 2, 100, "#C0C0C0");
-        startCircle = new GraphicCircle(getWidth() / 2, (getHeight() / 2) - 250, 100, "#008000");
-        pauseCircle2 = new GraphicCircle((getWidth() / 2) + 250, getHeight() / 2, 100, "#C0C0C0");
-        startCircle2 = new GraphicCircle((getWidth() / 2) + 250, (getHeight() / 2) - 250, 100, "#008000");
-        tickText = new GraphicText(getWidth() / 4, getHeight() / 4, "Hi", "#C0C0C0");
+        // Set the objects
+        pauseCircle.setCenter(getWidth() / 2, getHeight() / 2);
+        startCircle.setCenter(getWidth() / 2, (getHeight() / 2) - 250);
+        pauseCircle2.setCenter((getWidth() / 2) + 250, getHeight() / 2);
+        startCircle2.setCenter((getWidth() / 2) + 250, (getHeight() / 2) - 250);
+        tickText.setPosition(getWidth() / 4, getHeight() / 4);
     }
 
     @Override

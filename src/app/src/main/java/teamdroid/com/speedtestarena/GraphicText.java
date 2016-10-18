@@ -37,6 +37,11 @@ public class GraphicText extends Drawable {
         setTextSizeForWidth(p, 100f, 50f, text);
     }
 
+    public void setPosition(float px, float py) {
+        locx = px;
+        locy = py;
+    }
+
     private static void setTextSizeForWidth(Paint paint, float desiredWidth, float textSize, String text) {
         /*
         // Get the bounds of the text, using our testTextSize.

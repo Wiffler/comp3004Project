@@ -39,7 +39,15 @@ public class GameTest1MainThread extends Thread {
         this.audioThread = new CanvasTestAudioThread(context);
         this.soundPoolThread =  new CanvasTestSoundPoolThread(context);
 
+        // Create the objects
         circles = new GraphicCircle[4];
+
+        circles[0] = new GraphicCircle(0, 0, 100, "#C0C0C0");
+        circles[1] = new GraphicCircle(0, 0, 100, "#008000");
+        circles[2] = new GraphicCircle(0, 0, 100, "#C0C0C0");
+        circles[3] = new GraphicCircle(0, 0, 100, "#008000");
+        scoreText = new GraphicText(0, 0, "Score: " + score, "#000000");
+        tickText = new GraphicText(0, 0, "Interval: ", "#000000");
     }
 
     public void setRunning(boolean running) {
@@ -59,15 +67,15 @@ public class GameTest1MainThread extends Thread {
         audioThread.start();
         soundPoolThread.start();
 
-        // Create the objects
-        circles[0] = new GraphicCircle(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2, 100, "#C0C0C0");
-        circles[1] = new GraphicCircle(gamePanel.getWidth() / 2, (gamePanel.getHeight() / 2) - 250, 100, "#008000");
-        circles[2] = new GraphicCircle((gamePanel.getWidth() / 2) + 250, gamePanel.getHeight() / 2, 100, "#C0C0C0");
-        circles[3] = new GraphicCircle((gamePanel.getWidth() / 2) + 250, (gamePanel.getHeight() / 2) - 250, 100, "#008000");
-        scoreText = new GraphicText(50, 50, "Score: " + score, "#000000");
-        tickText = new GraphicText(50, 100, "Interval: " + (curTime - prevTime), "#000000");
+        // Set the objects
+        circles[0].setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
+        circles[1].setCenter(gamePanel.getWidth() / 2, (gamePanel.getHeight() / 2) - 250);
+        circles[2].setCenter((gamePanel.getWidth() / 2) + 250, gamePanel.getHeight() / 2);
+        circles[3].setCenter((gamePanel.getWidth() / 2) + 250, (gamePanel.getHeight() / 2) - 250);
+        scoreText.setPosition(50, 50);
+        tickText.setPosition(50, 100);
 
-        audioThread.startAudio();
+        //audioThread.startAudio();
 
         while (this.running) {
             prevTime = curTime;
