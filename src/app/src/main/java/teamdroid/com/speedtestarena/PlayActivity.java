@@ -13,6 +13,8 @@ import android.widget.ListView;
 
 public class PlayActivity extends AppCompatActivity {
 
+    ListView gameSelection = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,27 +25,23 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create array adapter
-        String[] mylist = {"Game1", "Game2"};
+        String[] mylist = {"Canvas Test", "Game2"};
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_play_textview, mylist);
 
-        //System.out.println("Hi");
-
-        // Create the list view
-        final ListView gameSelection = (ListView) findViewById(R.id.GameSelection_ListView);
+        // Create the list view and set the adapter
+        gameSelection = (ListView) findViewById(R.id.GameSelection_ListView);
         gameSelection.setAdapter(adapter);
 
-
-        // Set listener
+        // Set listener for the listview
         gameSelection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object listItem = gameSelection.getItemAtPosition(position);
-                startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
+
+                if ((String) listItem == "Canvas Test") {
+                    startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
+                }
             }
         });
     }
-
-    /*protected void onResume() {
-        //gameSelection.myTextView.setFocusable(true);
-    }*/
 }
