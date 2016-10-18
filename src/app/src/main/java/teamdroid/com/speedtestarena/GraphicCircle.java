@@ -30,6 +30,11 @@ public class GraphicCircle {
         System.out.println(c);
     }
 
+    public void setCenter(float px, float py) {
+        centerx = px;
+        centery = py;
+    }
+
     public boolean inCircle(float px, float py) {
         if ((centerx - px) * (centerx - px) + (centery - py) * (centery - py) <= radius * radius) {
             return true;

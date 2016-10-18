@@ -13,25 +13,30 @@ public class GraphicText {
     private float locx;
     private float locy;
     private String text;
-    private int color;
+    private Paint p;
 
     public GraphicText(float x, float y, String t, String c) {
         locx = x;
         locy = y;
         text = t;
-        color = Color.parseColor(c);
+
+        p = new Paint();
+        p.setColor(Color.parseColor(c));
+        setTextSizeForWidth(p, 100f, 100f, text);
     }
 
     public void setColor(String c) {
         // Use Color.parseColor to define HTML colors
-        this.color = Color.parseColor(c);
+        p.setColor(Color.parseColor(c));
     }
 
     public void setText(String t) {
         this.text = t;
+        setTextSizeForWidth(p, 100f, 50f, text);
     }
 
     private static void setTextSizeForWidth(Paint paint, float desiredWidth, float textSize, String text) {
+        /*
         // Get the bounds of the text, using our testTextSize.
         paint.setTextSize(textSize);
         Rect bounds = new Rect();
@@ -39,15 +44,13 @@ public class GraphicText {
 
         // Calculate the desired size as a proportion of our testTextSize.
         float desiredTextSize = textSize * desiredWidth / bounds.width();
+        */
 
         // Set the paint for that size.
-        paint.setTextSize(desiredTextSize);
+        paint.setTextSize(textSize);
     }
 
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(color);
-        setTextSizeForWidth(paint, 100f, 48f, text);
-        canvas.drawText(text, locx, locy, paint);
+        canvas.drawText(text, locx, locy, p);
     }
 }

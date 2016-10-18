@@ -28,7 +28,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="teamdroid.com.speedtestarena.MainActivity" />
         </activity>
-        <activity android:name=".CanvasTestActivity"></activity>
+        <activity android:name=".CanvasTestActivity" />
+        <activity android:name=".GameTest1Activity"></activity>
     </application>
 
 </manifest>

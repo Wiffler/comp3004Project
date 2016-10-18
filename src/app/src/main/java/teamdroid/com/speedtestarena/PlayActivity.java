@@ -25,7 +25,7 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create array adapter
-        String[] mylist = {"Canvas Test", "Game2"};
+        String[] mylist = {"Canvas Test", "Game Test 1"};
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_play_textview, mylist);
 
         // Create the list view and set the adapter
@@ -40,6 +40,8 @@ public class PlayActivity extends AppCompatActivity {
 
                 if ((String) listItem == "Canvas Test") {
                     startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
+                } else if ((String) listItem == "Game Test 1") {
+                    startActivity(new Intent(PlayActivity.this, GameTest1Activity.class));
                 }
             }
         });
