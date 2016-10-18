@@ -55,10 +55,11 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //postInvalidate();
-
         super.onDraw(canvas);
-        drawGame(canvas);
+
+        if (gameThread.isRunning()) {
+            drawGame(canvas);
+        }
     }
 
     @Override
@@ -81,27 +82,6 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
             } else {
                 System.out.println("Coords: x=" + event.getX() + ", y=" + event.getY());
 
-                /*if (startCircle.inCircle(event.getX(), event.getY())) {
-                    soundPoolThread.startAudio(R.raw.metronome1_sound_file);
-                    pauseCircle.setColor("#CD5C5C");
-                }
-
-                if (pauseCircle.inCircle(event.getX(), event.getY())) {
-                    soundPoolThread.pauseAudio(R.raw.metronome1_sound_file);
-                    pauseCircle.setColor("#C0C0C0");
-                }
-
-                if (startCircle2.inCircle(event.getX(), event.getY())) {
-                    audioThread.startAudio();
-                    pauseCircle2.setColor("#CD5C5C");
-
-                }
-
-                if (pauseCircle2.inCircle(event.getX(), event.getY())) {
-                    audioThread.pauseAudio();
-                    pauseCircle2.setColor("#C0C0C0");
-                }*/
-
                 if (gameThread.circles[0].inCircle(event.getX(), event.getY())) {
                     gameThread.score += 1;
                     System.out.println(gameThread.score);
@@ -119,11 +99,5 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         for (int i = 0; i < gameThread.circles.length; i++) {
             gameThread.circles[i].draw(canvas);
         }
-
-        /*pauseCircle.draw(canvas);
-        startCircle.draw(canvas);
-        pauseCircle2.draw(canvas);
-        startCircle2.draw(canvas);
-        tickText.draw(canvas);*/
     }
 }

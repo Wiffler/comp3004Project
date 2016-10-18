@@ -54,6 +54,8 @@ public class GameTest1MainThread extends Thread {
         this.running = running;
     }
 
+    public boolean isRunning() { return this.running; }
+
     @Override
     public void run() {
         long curTime = 0;
