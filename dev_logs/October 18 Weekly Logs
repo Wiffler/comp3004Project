@@ -1,0 +1,7 @@
+(1) Added classes to handle audio for the game.
+(2) Added classes for graphics objects.
+(3) Added code to track time for each update and render cycle.
+(4) Added a basic activity for a test game.  
+(5) Fixed design problem causing rendering step to take too long.
+    Interval between renders went from ~1000ms(!!) to ~15-20ms(30+ fps).
+(6) Fixed issues with null drawable objects due to race conditions between the game processing thread and drawing thread.
