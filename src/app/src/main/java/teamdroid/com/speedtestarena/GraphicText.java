@@ -2,14 +2,16 @@ package teamdroid.com.speedtestarena;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 
 /**
  * Created by Kenny on 2016-10-17.
  */
 
-public class GraphicText {
+public class GraphicText extends Drawable {
     private float locx;
     private float locy;
     private String text;
@@ -50,6 +52,24 @@ public class GraphicText {
         paint.setTextSize(textSize);
     }
 
+    // Drawable
+    @Override
+    public int getOpacity()
+    {
+        return PixelFormat.OPAQUE;
+    }
+
+    @Override
+    public void setAlpha(int arg0)
+    {
+    }
+
+    @Override
+    public void setColorFilter(ColorFilter arg0)
+    {
+    }
+
+    @Override
     public void draw(Canvas canvas) {
         canvas.drawText(text, locx, locy, p);
     }

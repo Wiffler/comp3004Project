@@ -19,7 +19,7 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
 
     // objects
     private GraphicCircle pauseCircle, startCircle, pauseCircle2, startCircle2;
-    private GraphicText tickText;
+    public GraphicText tickText;
 
     public CanvasTest(Context context) {
         super(context);
@@ -76,8 +76,6 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        postInvalidate();
-
         super.onDraw(canvas);
         drawGame(canvas);
     }

@@ -14,6 +14,8 @@ import android.media.MediaPlayer;
 public class CanvasTestAudioThread extends Thread {
     // flag to hold run state
     private volatile boolean running = false;
+
+    private volatile boolean play = false;
     MediaPlayer mp = null;
 
     public CanvasTestAudioThread(Context context) {
@@ -26,9 +28,7 @@ public class CanvasTestAudioThread extends Thread {
     }
 
     public void startAudio() {
-        if (mp != null) {
-            mp.start();
-        }
+        play = true;
     }
 
     public void pauseAudio() {
@@ -40,7 +40,12 @@ public class CanvasTestAudioThread extends Thread {
     @Override
     public void run() {
         while (this.running) {
-
+            if (play) {
+                if (mp != null) {
+                    mp.start();
+                }
+                play = false;
+            }
         }
 
         mp.release();

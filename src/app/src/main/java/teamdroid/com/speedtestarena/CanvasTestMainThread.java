@@ -32,18 +32,18 @@ public class CanvasTestMainThread extends Thread {
 
     @Override
     public void run() {
-        long tickCount = 0L;
+        long prevTime = 0;
+        long curTime = System.currentTimeMillis();
+        long intervalTime = (curTime - prevTime);
 
         while (this.running) {
-            tickCount++;
+            prevTime = curTime;
+            curTime = System.currentTimeMillis();
+            intervalTime = (curTime - prevTime);
 
-            Canvas canvas = surfaceHolder.lockCanvas();
-            if (canvas == null) {
-                System.out.println("Cannot draw. Canvas is null.");
-            } else {
-                gamePanel.draw(canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
-            }
+            gamePanel.tickText.setText("Interval: " + intervalTime);
+
+            gamePanel.postInvalidate();
         }
     }
 }

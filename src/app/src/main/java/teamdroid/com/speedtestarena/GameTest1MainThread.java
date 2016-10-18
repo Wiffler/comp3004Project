@@ -87,13 +87,7 @@ public class GameTest1MainThread extends Thread {
                 intervalTime = 0;
             }
 
-            Canvas canvas = surfaceHolder.lockCanvas();
-            if (canvas == null) {
-                System.out.println("Cannot draw. Canvas is null.");
-            } else {
-                gamePanel.draw(canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
-            }
+            gamePanel.postInvalidate();
         }
 
         audioThread.setRunning(false);

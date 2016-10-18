@@ -55,7 +55,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        postInvalidate();
+        //postInvalidate();
 
         super.onDraw(canvas);
         drawGame(canvas);
