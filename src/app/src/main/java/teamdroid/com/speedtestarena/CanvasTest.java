@@ -7,6 +7,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
 
+import teamdroid.com.speedtestarena.graphics.GraphicCircle;
+import teamdroid.com.speedtestarena.graphics.GraphicCubicBezier;
+import teamdroid.com.speedtestarena.graphics.GraphicText;
+import teamdroid.com.speedtestarena.graphics.Tracer;
+
 /**
  * Created by Kenny on 2016-10-11.
  */
@@ -20,6 +25,8 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
     // objects
     private GraphicCircle pauseCircle, startCircle, pauseCircle2, startCircle2;
     public GraphicText tickText;
+    private GraphicCubicBezier curve1;
+    public Tracer trace;
 
     public CanvasTest(Context context) {
         super(context);
@@ -37,8 +44,8 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         pauseCircle2 = new GraphicCircle(0, 0, 100, "#C0C0C0");
         startCircle2 = new GraphicCircle(0, 0, 100, "#008000");
         tickText = new GraphicText(0, 0, "", "#C0C0C0");
-
-
+        curve1 = new GraphicCubicBezier(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
+        trace = new Tracer();
     }
 
     @Override
@@ -62,6 +69,8 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         pauseCircle2.setCenter((getWidth() / 2) + 250, getHeight() / 2);
         startCircle2.setCenter((getWidth() / 2) + 250, (getHeight() / 2) - 250);
         tickText.setPosition(getWidth() / 4, getHeight() / 4);
+
+        curve1.setControlPoints(0, 0, getWidth() / 2 - 250, getHeight() / 2, getWidth() / 2 + 250, getHeight() / 2, getWidth(), getHeight());
     }
 
     @Override
@@ -130,18 +139,32 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
                     audioThread.pauseAudio();
                     pauseCircle2.setColor("#C0C0C0");
                 }
+
+                trace.set(event.getX(), event.getY());
             }
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            trace.eventUpdate(event.getX(), event.getY());
+
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            trace.reset();
+
         }
-        return super.onTouchEvent(event);
+
+        return true;
     }
 
     private void drawGame(Canvas canvas) {
         canvas.drawRGB(100, 100, 255);
 
+        curve1.draw(canvas);
+
         pauseCircle.draw(canvas);
         startCircle.draw(canvas);
         pauseCircle2.draw(canvas);
         startCircle2.draw(canvas);
+
+        trace.draw(canvas);
+
         tickText.draw(canvas);
     }
 }

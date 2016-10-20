@@ -1,12 +1,12 @@
 package teamdroid.com.speedtestarena;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.view.Display;
 import android.view.SurfaceHolder;
 
 import java.util.Random;
+
+import teamdroid.com.speedtestarena.graphics.GraphicCircle;
+import teamdroid.com.speedtestarena.graphics.GraphicText;
 
 /**
  * Created by Kenny on 2016-10-17.

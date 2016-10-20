@@ -41,6 +41,8 @@ public class CanvasTestMainThread extends Thread {
             curTime = System.currentTimeMillis();
             intervalTime = (curTime - prevTime);
 
+            gamePanel.trace.tickUpdate();
+
             gamePanel.tickText.setText("Interval: " + intervalTime);
 
             gamePanel.postInvalidate();
