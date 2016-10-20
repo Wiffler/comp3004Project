@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.graphics;
+package teamdroid.com.speedtestarena.actor;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,13 +11,13 @@ import android.graphics.drawable.Drawable;
  * Created by Kenny on 2016-10-17.
  */
 
-public class GraphicText extends Drawable {
+public class Text {
     private float locx;
     private float locy;
     private String text;
     private Paint p;
 
-    public GraphicText(float x, float y, String t, String c) {
+    public Text(float x, float y, String t, String c) {
         locx = x;
         locy = y;
         text = t;
@@ -27,6 +27,7 @@ public class GraphicText extends Drawable {
         setTextSizeForWidth(p, 100f, 100f, text);
     }
 
+    // Setters
     public void setColor(String c) {
         // Use Color.parseColor to define HTML colors
         p.setColor(Color.parseColor(c));
@@ -40,6 +41,23 @@ public class GraphicText extends Drawable {
     public void setPosition(float px, float py) {
         locx = px;
         locy = py;
+    }
+
+    // Getters
+    public String getText() {
+        return this.text;
+    }
+
+    public float getX() {
+        return locx;
+    }
+
+    public float getY() {
+        return locy;
+    }
+
+    public Paint getP() {
+        return p;
     }
 
     private static void setTextSizeForWidth(Paint paint, float desiredWidth, float textSize, String text) {
@@ -57,25 +75,17 @@ public class GraphicText extends Drawable {
         paint.setTextSize(textSize);
     }
 
-    // Drawable
-    @Override
+    // Drawing
     public int getOpacity()
     {
         return PixelFormat.OPAQUE;
     }
 
-    @Override
     public void setAlpha(int arg0)
     {
     }
 
-    @Override
     public void setColorFilter(ColorFilter arg0)
     {
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawText(text, locx, locy, p);
     }
 }

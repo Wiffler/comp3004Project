@@ -7,13 +7,14 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
 
+import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
 import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.graphics.GraphicCircle;
-import teamdroid.com.speedtestarena.graphics.GraphicCubicBezier;
-import teamdroid.com.speedtestarena.graphics.GraphicText;
-import teamdroid.com.speedtestarena.graphics.Tracer;
+import teamdroid.com.speedtestarena.actor.Circle;
+import teamdroid.com.speedtestarena.actor.CubicBezier;
+import teamdroid.com.speedtestarena.actor.Text;
+import teamdroid.com.speedtestarena.actor.Tracer;
 
 /**
  * Created by Kenny on 2016-10-11.
@@ -25,10 +26,12 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
     private CanvasTestAudioThread audioThread;
     private CanvasTestSoundPoolThread soundPoolThread;
 
+    private Renderer render;
+
     // objects
-    private GraphicCircle pauseCircle, startCircle, pauseCircle2, startCircle2;
-    public GraphicText tickText;
-    private GraphicCubicBezier curve1;
+    private Circle pauseCircle, startCircle, pauseCircle2, startCircle2;
+    public Text tickText;
+    private CubicBezier curve1;
     public Tracer trace;
 
     public CanvasTest(Context context) {
@@ -42,13 +45,15 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         soundPoolThread =  new CanvasTestSoundPoolThread(context);
 
         // Create the objects
-        pauseCircle = new GraphicCircle(0, 0, 100, "#C0C0C0");
-        startCircle = new GraphicCircle(0, 0, 100, "#008000");
-        pauseCircle2 = new GraphicCircle(0, 0, 100, "#C0C0C0");
-        startCircle2 = new GraphicCircle(0, 0, 100, "#008000");
-        tickText = new GraphicText(0, 0, "", "#C0C0C0");
-        curve1 = new GraphicCubicBezier(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
+        pauseCircle = new Circle(0, 0, 100, "#C0C0C0");
+        startCircle = new Circle(0, 0, 100, "#008000");
+        pauseCircle2 = new Circle(0, 0, 100, "#C0C0C0");
+        startCircle2 = new Circle(0, 0, 100, "#008000");
+        tickText = new Text(0, 0, "", "#C0C0C0");
+        curve1 = new CubicBezier(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
         trace = new Tracer();
+
+        render = new Renderer();
     }
 
     @Override
@@ -159,15 +164,15 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
     private void drawGame(Canvas canvas) {
         canvas.drawRGB(100, 100, 255);
 
-        curve1.draw(canvas);
+        render.render(canvas, curve1);
 
-        pauseCircle.draw(canvas);
-        startCircle.draw(canvas);
-        pauseCircle2.draw(canvas);
-        startCircle2.draw(canvas);
+        render.render(canvas, pauseCircle);
+        render.render(canvas, startCircle);
+        render.render(canvas, pauseCircle2);
+        render.render(canvas, startCircle2);
 
-        trace.draw(canvas);
+        render.render(canvas, trace);
 
-        tickText.draw(canvas);
+        render.render(canvas, tickText);
     }
 }

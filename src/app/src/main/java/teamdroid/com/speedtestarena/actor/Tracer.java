@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.graphics;
+package teamdroid.com.speedtestarena.actor;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -16,12 +16,12 @@ import teamdroid.com.speedtestarena.math.Vector2f;
  * Created by Kenny on 2016-10-19.
  */
 
-public class Tracer extends Drawable {
+public class Tracer {
+    private volatile boolean ready = false;
 
-    private Path path;
+    private volatile Path path;
     private Paint p;
     private Vector2f p1, p2;
-    private volatile boolean ready = false;
 
     private ArrayList<Vector2f> pointList;
 
@@ -42,12 +42,23 @@ public class Tracer extends Drawable {
         pointList = new ArrayList<Vector2f>();
     }
 
+    // Setters
     public void set(float px, float py) {
         p2.set(px, py);
         pointList.add(new Vector2f(p2));
         ready = true;
     }
 
+    // Getters
+    public Path getPath() {
+        return this.path;
+    }
+
+    public Paint getP() {
+        return this.p;
+    }
+
+    // Updates
     public void eventUpdate(float px, float py) {
         if (MathUtil.distanceSquare(p2.getX(), p2.getY(), px, py) > 25) {
             p1.set(p2);
@@ -57,7 +68,6 @@ public class Tracer extends Drawable {
 
             path.moveTo(p1.getX(), p1.getY());
             path.lineTo(p2.getX(), p2.getY());
-            //System.out.println(px1 + " " + py1 + " " + px2 + " " + py2);
         }
     }
 
@@ -87,24 +97,16 @@ public class Tracer extends Drawable {
     }
 
     // Drawable
-    @Override
     public int getOpacity()
     {
         return PixelFormat.OPAQUE;
     }
 
-    @Override
     public void setAlpha(int arg0)
     {
     }
 
-    @Override
     public void setColorFilter(ColorFilter arg0)
     {
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawPath(path, p);
     }
 }

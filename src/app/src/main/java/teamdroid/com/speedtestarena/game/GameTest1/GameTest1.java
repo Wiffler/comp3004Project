@@ -7,12 +7,17 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import teamdroid.com.speedtestarena.graphics.Renderer;
+
 /**
  * Created by Kenny on 2016-10-17.
  */
 
 public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
+    public volatile boolean ready = false;
+
+    private Renderer render;
     private GameTest1MainThread gameThread;
 
     public GameTest1(Context context) {
@@ -20,6 +25,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
 
         // create the game threads
+        render = new Renderer();
         gameThread = new GameTest1MainThread(getHolder(), this, context);
 
         setFocusable(true);
@@ -94,10 +100,13 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     private void drawGame(Canvas canvas) {
         canvas.drawRGB(255, 255, 255);
 
-        gameThread.tickText.draw(canvas);
-        gameThread.scoreText.draw(canvas);
         for (int i = 0; i < gameThread.circles.length; i++) {
-            gameThread.circles[i].draw(canvas);
+            render.render(canvas, gameThread.circles[i]);
         }
+
+        render.render(canvas, gameThread.tickText);
+        render.render(canvas, gameThread.scoreText);
+
+        ready = true;
     }
 }

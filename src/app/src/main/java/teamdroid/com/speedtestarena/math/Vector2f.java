@@ -6,36 +6,34 @@ package teamdroid.com.speedtestarena.math;
 
 public class Vector2f {
 
-    private float[] vector;
+    private float x, y;
 
     public Vector2f(float x, float y) {
-        vector = new float[2];
-        vector[0] = x;
-        vector[1] = y;
+        this.x = x;
+        this.y = y;
     }
 
     public Vector2f(Vector2f v) {
-        vector = new float[2];
-        vector[0] = v.getX();
-        vector[1] = v.getY();
+        this.x = v.getX();
+        this.y = v.getY();
     }
 
     public void set(float x, float y) {
-        vector[0] = x;
-        vector[1] = y;
+        this.x = x;
+        this.y = y;
     }
 
     public void set(Vector2f v) {
-        vector[0] = v.getX();
-        vector[1] = v.getY();
+        this.x = v.getX();
+        this.y = v.getY();
     }
 
     public float getX() {
-        return vector[0];
+        return x;
     }
 
     public float getY() {
-        return vector[1];
+        return y;
     }
 
     public static float dotProduct(Vector2f v1, Vector2f v2) {
