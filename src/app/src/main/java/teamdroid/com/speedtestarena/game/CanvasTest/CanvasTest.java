@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.game.CanvasTest;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -7,6 +7,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
 
+import teamdroid.com.speedtestarena.CanvasTestAudioThread;
+import teamdroid.com.speedtestarena.CanvasTestSoundPoolThread;
+import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.GraphicCircle;
 import teamdroid.com.speedtestarena.graphics.GraphicCubicBezier;
 import teamdroid.com.speedtestarena.graphics.GraphicText;

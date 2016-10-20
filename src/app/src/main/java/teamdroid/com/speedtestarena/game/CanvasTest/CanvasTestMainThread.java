@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.game.CanvasTest;
 
 /**
  * Created by Kenny on 2016-10-11.
@@ -9,8 +9,9 @@ package teamdroid.com.speedtestarena;
     Need to properly sync the update and render cycles after chronometer is implemented.
  */
 
-import android.graphics.Canvas;
 import android.view.SurfaceHolder;
+
+import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTest;
 
 public class CanvasTestMainThread extends Thread {
     // flag to hold game state

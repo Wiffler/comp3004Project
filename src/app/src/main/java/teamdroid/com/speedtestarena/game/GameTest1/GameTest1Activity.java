@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import teamdroid.com.speedtestarena.game.GameTest1.GameTest1;
 
 public class GameTest1Activity extends AppCompatActivity {
 

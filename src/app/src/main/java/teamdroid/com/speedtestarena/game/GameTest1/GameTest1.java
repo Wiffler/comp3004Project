@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.app.Activity;
 import android.content.Context;
