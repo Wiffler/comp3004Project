@@ -11,20 +11,22 @@ package teamdroid.com.speedtestarena.game.CanvasTest;
 
 import android.view.SurfaceHolder;
 
-import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTest;
+import teamdroid.com.speedtestarena.utility.GameTimer;
 
 public class CanvasTestMainThread extends Thread {
-    // flag to hold game state
     private volatile boolean running = false;
 
     private SurfaceHolder surfaceHolder;
     private CanvasTest gamePanel;
+    private GameTimer timer;
 
     public CanvasTestMainThread(SurfaceHolder surfaceHolder, CanvasTest gamePanel) {
         super();
 
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
+
+        timer = new GameTimer();
     }
 
     public void setRunning(boolean running) {
@@ -33,20 +35,55 @@ public class CanvasTestMainThread extends Thread {
 
     @Override
     public void run() {
+        long frames_done = 0;
+        long fps = 0;
         long prevTime = 0;
-        long curTime = System.currentTimeMillis();
-        long intervalTime = (curTime - prevTime);
+
+        timer.setRunning(true);
+        timer.start();
 
         while (this.running) {
-            prevTime = curTime;
-            curTime = System.currentTimeMillis();
-            intervalTime = (curTime - prevTime);
+            while(timer.getTicks() == 0) {
+                // No need to update so sleep the thread
+                try {
+                    sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
-            gamePanel.trace.tickUpdate();
+            while(timer.getTicks() > 0) {
+                long old_ticks = timer.getTicks();
 
-            gamePanel.tickText.setText("Interval: " + intervalTime);
+                // update game state
+                gamePanel.trace.tickUpdate();
 
+                timer.decrementTicks();
+                if(old_ticks <= timer.getTicks()) {
+                    break;
+                }
+            }
+
+            if (timer.getTime() - prevTime >= 1000) {
+                // fps now holds the the number of frames done in the last second
+                fps = frames_done;
+                gamePanel.tickText.setText("FPS: " + fps);
+
+                // reset for the next second
+                frames_done = 0;
+                prevTime = timer.getTime();
+            }
+
+            // draw a frame
             gamePanel.postInvalidate();
+            frames_done++;
+        }
+
+        try {
+            timer.setRunning(false);
+            timer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

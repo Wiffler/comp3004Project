@@ -25,9 +25,6 @@ public class Tracer extends Drawable {
 
     private ArrayList<Vector2f> pointList;
 
-    private long t0;
-    private long t1;
-
     public Tracer() {
         p1 = new Vector2f(-1f, -1f);
         p2 = new Vector2f(-1f, -1f);
@@ -47,11 +44,7 @@ public class Tracer extends Drawable {
 
     public void set(float px, float py) {
         p2.set(px, py);
-
         pointList.add(new Vector2f(p2));
-
-        t0 = System.currentTimeMillis();
-
         ready = true;
     }
 
@@ -70,15 +63,9 @@ public class Tracer extends Drawable {
 
     public void tickUpdate() {
         if (ready) {
-            t1 = System.currentTimeMillis();
-
-            if ((t1 - t0 > 25) && (pointList.size() > 2)) {
-                t0 = t1;
-
+            if (pointList.size() > 2) {
                 pointList.remove(0);
                 path.reset();
-
-                //System.out.println("Removing...");
 
                 for (int i = 0; i <= pointList.size() - 2; i++) {
                     path.moveTo(pointList.get(i).getX(), pointList.get(i).getY());
@@ -95,9 +82,6 @@ public class Tracer extends Drawable {
 
         p1.set(-1f, -1f);
         p2.set(-1f, -1f);
-
-        t0 = 0;
-        t1 = 0;
 
         pointList.clear();
     }
