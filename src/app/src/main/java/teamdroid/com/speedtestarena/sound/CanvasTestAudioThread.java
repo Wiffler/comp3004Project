@@ -1,7 +1,9 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.sound;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+
+import teamdroid.com.speedtestarena.R;
 
 /**
  * Created by Kenny on 2016-10-17.

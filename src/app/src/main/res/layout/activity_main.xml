@@ -27,6 +27,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Leaderboards_Button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/Play_Button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp" />
+
+    <Button
+        android:text="Quit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Quit_Button"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/Leaderboards_Button"
+        android:layout_alignLeft="@+id/Leaderboards_Button"
+        android:layout_alignStart="@+id/Leaderboards_Button"
+        android:layout_alignRight="@+id/Leaderboards_Button"
+        android:layout_alignEnd="@+id/Leaderboards_Button" />
 </RelativeLayout>

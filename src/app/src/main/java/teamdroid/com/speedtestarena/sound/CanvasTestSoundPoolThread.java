@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena;
+package teamdroid.com.speedtestarena.sound;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.SoundPool;
 import android.util.SparseIntArray;
+
+import teamdroid.com.speedtestarena.R;
 
 /**
  * Created by Kenny on 2016-10-17.

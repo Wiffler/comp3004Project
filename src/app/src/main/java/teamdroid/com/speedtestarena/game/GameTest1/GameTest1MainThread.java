@@ -5,9 +5,8 @@ import android.view.SurfaceHolder;
 
 import java.util.Random;
 
-import teamdroid.com.speedtestarena.CanvasTestAudioThread;
-import teamdroid.com.speedtestarena.CanvasTestSoundPoolThread;
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1;
+import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
+import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.graphics.GraphicCircle;
 import teamdroid.com.speedtestarena.graphics.GraphicText;
 

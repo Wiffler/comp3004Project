@@ -21,5 +21,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, PlayActivity.class));
             }
         });
+
+        Button quitButton = (Button) findViewById(R.id.Quit_Button);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.exit(0);
+            }
+        });
     }
 }

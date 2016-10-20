@@ -7,8 +7,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
 
-import teamdroid.com.speedtestarena.CanvasTestAudioThread;
-import teamdroid.com.speedtestarena.CanvasTestSoundPoolThread;
+import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
+import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.GraphicCircle;
 import teamdroid.com.speedtestarena.graphics.GraphicCubicBezier;
