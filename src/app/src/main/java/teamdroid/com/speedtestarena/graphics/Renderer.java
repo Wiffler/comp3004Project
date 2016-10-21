@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.CubicBezier;
+import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.actor.Tracer;
 
@@ -29,5 +30,20 @@ public class Renderer {
 
     public static void render(Canvas canvas, Tracer obj) {
         canvas.drawPath(obj.getPath(), obj.getP());
+    }
+
+    public static void render(Canvas canvas, ParticleTracer obj) {
+        if (obj.isActive()) {
+            render(canvas, obj.getTex());
+        }
+    }
+
+    public static void render(Canvas canvas, Texture obj) {
+        //canvas.drawBitmap(obj.getTex(), obj.getMatrix(), null);
+        canvas.drawBitmap(obj.getTex(), obj.getX(), obj.getY(), obj.getP());
+    }
+
+    public static void render(Canvas canvas, Particle obj) {
+        render(canvas, obj.getTex());
     }
 }

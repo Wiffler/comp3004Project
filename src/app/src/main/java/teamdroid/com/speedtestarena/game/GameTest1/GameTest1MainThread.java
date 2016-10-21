@@ -3,13 +3,19 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
+import teamdroid.com.speedtestarena.actor.ParticleTracer;
+import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
 import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.utility.GameTimer;
+
+import static android.R.id.list;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -33,6 +39,8 @@ public class GameTest1MainThread extends Thread {
     public Circle[] circles;
     public Text scoreText;
     public Text tickText;
+    public ParticleTracer trace;
+    //public volatile ArrayList<Particle> particleList;
 
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel, Context context) {
         super();
@@ -51,8 +59,9 @@ public class GameTest1MainThread extends Thread {
         circles[1] = new Circle(0, 0, 100, "#008000");
         circles[2] = new Circle(0, 0, 100, "#C0C0C0");
         circles[3] = new Circle(0, 0, 100, "#008000");
-        scoreText = new Text(0, 0, "Score: " + score, "#000000");
-        tickText = new Text(0, 0, "Interval: ", "#000000");
+        scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
+        tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
+        trace = new ParticleTracer(context, this);
     }
 
     public void setRunning(boolean running) {
@@ -63,6 +72,7 @@ public class GameTest1MainThread extends Thread {
 
     private void initialise() {
         // Setup the objects
+        //particleList = new ArrayList<Particle>();
         circles[0].setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
         circles[1].setCenter(gamePanel.getWidth() / 2, (gamePanel.getHeight() / 2) - 250);
         circles[2].setCenter((gamePanel.getWidth() / 2) + 250, gamePanel.getHeight() / 2);
@@ -96,6 +106,19 @@ public class GameTest1MainThread extends Thread {
                 r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
                 r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
         scoreText.setText("Score: " + score);
+
+        /*
+        System.out.println(particleList.size());
+        for (Iterator<Particle> iterator = particleList.iterator(); iterator.hasNext(); ) {
+            Particle p = iterator.next();
+            if (p.getAlpha() <= 0) {
+                //System.out.println("Removing...");
+                iterator.remove();
+            } else {
+                p.update();
+            }
+        }
+        */
     }
 
     @Override
@@ -112,8 +135,6 @@ public class GameTest1MainThread extends Thread {
         initialise();
 
         // Start the game
-        //gamePanel.postInvalidate();
-
         while (!gamePanel.ready) {
             audioThread.startAudio();
         }
