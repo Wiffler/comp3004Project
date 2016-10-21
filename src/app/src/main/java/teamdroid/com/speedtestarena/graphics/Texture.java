@@ -14,21 +14,26 @@ import static java.security.AccessController.getContext;
 
 public class Texture {
 
-    Bitmap tex;
+    //Bitmap tex;
     Matrix m;
     Paint p;
+    TextureLoader loader;
+
+    int texID = -1;
 
     int width;
     int height;
     float x;
     float y;
 
-    public Texture(Context context, int id, float px, float py, int alpha) {
-        tex = BitmapFactory.decodeResource(context.getResources(), id);
+    public Texture(TextureLoader loc, int id, float px, float py, int alpha) {
+        //tex = BitmapFactory.decodeResource(context.getResources(), id);
+        texID = id;
+        loader = loc;
         x = px;
         y = py;
-        width = tex.getWidth();
-        height = tex.getHeight();
+        width = loader.getTexture(texID).getWidth();
+        height = loader.getTexture(texID).getHeight();
         m = new Matrix();
         this.p = new Paint();
         p.setAlpha(alpha);
@@ -52,7 +57,7 @@ public class Texture {
 
     // Getters
     public Bitmap getTex() {
-        return tex;
+        return loader.getTexture(texID);
     }
 
     public Matrix getMatrix() {

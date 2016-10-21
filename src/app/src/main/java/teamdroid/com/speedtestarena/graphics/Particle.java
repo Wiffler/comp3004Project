@@ -16,10 +16,10 @@ public class Particle {
     private Texture tex;
     private Vector2f pos;
 
-    public Particle(Context context, float px, float py) {
+    public Particle(TextureLoader loader, float px, float py) {
         decayRate = 5;
         pos = new Vector2f(px, py);
-        tex = new Texture(context, R.drawable.cursortrail, 0, 0, 255);
+        tex = new Texture(loader, R.drawable.cursortrail, 0, 0, 255);
         tex.setPos(px - tex.getWidth() / 2, py - tex.getHeight() / 2);
     }
 

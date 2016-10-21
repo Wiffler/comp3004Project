@@ -62,7 +62,7 @@ public class GameTest1MainThread extends Thread {
         randCircle = new Circle(0, 0, 100, "#008000");
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
-        trace = new ParticleTracer(context, this);
+        trace = new ParticleTracer(gamePanel.textures, this);
     }
 
     public void setRunning(boolean running) {

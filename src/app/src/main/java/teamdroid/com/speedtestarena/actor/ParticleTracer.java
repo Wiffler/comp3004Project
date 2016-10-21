@@ -8,6 +8,7 @@ import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.game.GameTest1.GameTest1MainThread;
 import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.graphics.Texture;
+import teamdroid.com.speedtestarena.graphics.TextureLoader;
 import teamdroid.com.speedtestarena.math.MathUtil;
 import teamdroid.com.speedtestarena.math.Vector2f;
 
@@ -21,20 +22,23 @@ public class ParticleTracer {
     private Vector2f prevPoint;
     private Texture tex;
     private GameTest1MainThread t;
-    private Context c;
+    TextureLoader loader;
+    //private Context c;
 
-    public ParticleTracer(Context context) {
+    public ParticleTracer(TextureLoader loader) {
+        this.loader = loader;
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(context, R.drawable.cursor, 0, 0, 255);
+        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255);
     }
 
-    public ParticleTracer(Context context, GameTest1MainThread thread) {
+    public ParticleTracer(TextureLoader loader, GameTest1MainThread thread) {
+        this.loader = loader;
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(context, R.drawable.cursor, 0, 0, 255);
+        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255);
         t = thread;
-        c = context;
+        //c = context;
     }
 
     public Texture getTex() {
@@ -51,7 +55,7 @@ public class ParticleTracer {
             prevPoint.set(px, py);
             tex.setPos(px - tex.getWidth() / 2, py - tex.getHeight() / 2);
             // spawn particle (not implemented)
-            t.particleList.add(new Particle(c, px, py));
+            t.particleList.add(new Particle(loader, px, py));
         }
     }
 

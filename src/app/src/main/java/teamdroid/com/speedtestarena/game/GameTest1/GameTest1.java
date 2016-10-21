@@ -1,13 +1,14 @@
 package teamdroid.com.speedtestarena.game.GameTest1;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
+import teamdroid.com.speedtestarena.graphics.TextureLoader;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -18,14 +19,21 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     public volatile boolean ready = false;
 
     private Renderer render;
+    public TextureLoader textures;
     private GameTest1MainThread gameThread;
 
     public GameTest1(Context context) {
         super(context);
         getHolder().addCallback(this);
 
-        // create the game threads
+        // Create the objects
         render = new Renderer();
+        textures = new TextureLoader();
+        // Load the textures
+        textures.loadTexture(context, R.drawable.cursor);
+        textures.loadTexture(context, R.drawable.cursortrail);
+
+        // Create the game thread
         gameThread = new GameTest1MainThread(getHolder(), this, context);
 
         setFocusable(true);
