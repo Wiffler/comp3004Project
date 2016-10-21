@@ -51,7 +51,7 @@ public class ParticleTracer {
             prevPoint.set(px, py);
             tex.setPos(px - tex.getWidth() / 2, py - tex.getHeight() / 2);
             // spawn particle (not implemented)
-            //t.particleList.add(new Particle(c, px, py));
+            t.particleList.add(new Particle(c, px, py));
         }
     }
 

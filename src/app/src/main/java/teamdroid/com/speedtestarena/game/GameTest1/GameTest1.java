@@ -80,28 +80,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            if (event.getY() > getHeight() - 50) {
-                gameThread.setRunning(false);
-                ((Activity) getContext()).finish();
-
-            } else {
-                System.out.println("Coords: x=" + event.getX() + ", y=" + event.getY());
-
-                if (gameThread.circles[0].inCircle(event.getX(), event.getY())) {
-                    gameThread.score += 1;
-                }
-
-                gameThread.trace.set(event.getX(), event.getY());
-            }
-
-        } else if (action == MotionEvent.ACTION_MOVE) {
-            gameThread.trace.eventUpdate(event.getX(), event.getY());
-
-        } else if (action == MotionEvent.ACTION_UP) {
-            gameThread.trace.reset();
-        }
+        gameThread.events.enqueue(event);
 
         return true;
     }
@@ -109,19 +88,15 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     private void drawGame(Canvas canvas) {
         canvas.drawRGB(0, 0, 0);
 
-        for (int i = 0; i < gameThread.circles.length; i++) {
-            render.render(canvas, gameThread.circles[i]);
-        }
-
+        render.render(canvas, gameThread.randCircle);
         render.render(canvas, gameThread.tickText);
         render.render(canvas, gameThread.scoreText);
 
         render.render(canvas, gameThread.trace);
-        /*
+
         for (int i = 0; i < gameThread.particleList.size(); i++) {
             render.render(canvas, gameThread.particleList.get(i));
         }
-        */
 
         ready = true;
     }

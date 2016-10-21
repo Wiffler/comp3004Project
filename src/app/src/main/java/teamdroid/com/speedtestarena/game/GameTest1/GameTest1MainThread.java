@@ -1,6 +1,8 @@
 package teamdroid.com.speedtestarena.game.GameTest1;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Random;
 
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
+import teamdroid.com.speedtestarena.io.EventQueue;
 import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
 import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.actor.Circle;
@@ -31,16 +34,17 @@ public class GameTest1MainThread extends Thread {
     private CanvasTestAudioThread audioThread;
     private CanvasTestSoundPoolThread soundPoolThread;
     private GameTimer timer;
+    public EventQueue events;
 
     private Random r = new Random();
 
     public int score = 0;
 
-    public Circle[] circles;
+    public Circle randCircle;
     public Text scoreText;
     public Text tickText;
     public ParticleTracer trace;
-    //public volatile ArrayList<Particle> particleList;
+    public ArrayList<Particle> particleList;
 
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel, Context context) {
         super();
@@ -52,13 +56,10 @@ public class GameTest1MainThread extends Thread {
         audioThread = new CanvasTestAudioThread(context);
         soundPoolThread =  new CanvasTestSoundPoolThread(context);
         timer = new GameTimer();
+        events = new EventQueue();
 
         // Create the objects
-        circles = new Circle[4];
-        circles[0] = new Circle(0, 0, 100, "#C0C0C0");
-        circles[1] = new Circle(0, 0, 100, "#008000");
-        circles[2] = new Circle(0, 0, 100, "#C0C0C0");
-        circles[3] = new Circle(0, 0, 100, "#008000");
+        randCircle = new Circle(0, 0, 100, "#008000");
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
         trace = new ParticleTracer(context, this);
@@ -72,11 +73,8 @@ public class GameTest1MainThread extends Thread {
 
     private void initialise() {
         // Setup the objects
-        //particleList = new ArrayList<Particle>();
-        circles[0].setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
-        circles[1].setCenter(gamePanel.getWidth() / 2, (gamePanel.getHeight() / 2) - 250);
-        circles[2].setCenter((gamePanel.getWidth() / 2) + 250, gamePanel.getHeight() / 2);
-        circles[3].setCenter((gamePanel.getWidth() / 2) + 250, (gamePanel.getHeight() / 2) - 250);
+        particleList = new ArrayList<Particle>();
+        randCircle.setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
 
@@ -101,24 +99,59 @@ public class GameTest1MainThread extends Thread {
         }
     }
 
+    private void handleIO() {
+        MotionEvent event;
+        int action;
+
+        while (events.size() > 0) {
+            event = events.dequeue();
+            action = event.getAction();
+
+            if (action == MotionEvent.ACTION_DOWN) {
+                //System.out.println("ACTION_DOWN");
+                if (event.getY() > gamePanel.getHeight() - 50) {
+                    this.setRunning(false);
+                    ((Activity) gamePanel.getContext()).finish();
+
+                } else {
+                    System.out.println("Coords: x=" + event.getX() + ", y=" + event.getY());
+
+                    if (randCircle.inCircle(event.getX(), event.getY())) {
+                        score += 1;
+                    }
+
+                    trace.set(event.getX(), event.getY());
+                }
+
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                //System.out.println("ACTION_MOVE");
+                trace.eventUpdate(event.getX(), event.getY());
+
+            } else if (action == MotionEvent.ACTION_UP) {
+                //System.out.println("ACTION_UP");
+                trace.reset();
+            }
+        }
+    }
+
     private void updateState(long curTime) {
-        circles[0].update(curTime,
+        // Update circle
+        randCircle.update(curTime,
                 r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
                 r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
+
+        // Update the score text
         scoreText.setText("Score: " + score);
 
-        /*
-        System.out.println(particleList.size());
+        // Update the particle list
         for (Iterator<Particle> iterator = particleList.iterator(); iterator.hasNext(); ) {
             Particle p = iterator.next();
             if (p.getAlpha() <= 0) {
-                //System.out.println("Removing...");
                 iterator.remove();
             } else {
                 p.update();
             }
         }
-        */
     }
 
     @Override
@@ -151,6 +184,9 @@ public class GameTest1MainThread extends Thread {
 
             while(timer.getTicks() > 0) {
                 long old_ticks = timer.getTicks();
+
+                // handle the IO events
+                handleIO();
 
                 // update game state
                 updateState(timer.getTime());
