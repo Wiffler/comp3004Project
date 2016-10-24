@@ -1,6 +1,5 @@
 package teamdroid.com.speedtestarena.actor;
 
-import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 
@@ -22,23 +21,21 @@ public class ParticleTracer {
     private Vector2f prevPoint;
     private Texture tex;
     private GameTest1MainThread t;
-    TextureLoader loader;
-    //private Context c;
+    private TextureLoader loader;
 
     public ParticleTracer(TextureLoader loader) {
         this.loader = loader;
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255);
+        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255, null);
     }
 
     public ParticleTracer(TextureLoader loader, GameTest1MainThread thread) {
         this.loader = loader;
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255);
+        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255, null);
         t = thread;
-        //c = context;
     }
 
     public Texture getTex() {
@@ -53,8 +50,8 @@ public class ParticleTracer {
     public void eventUpdate(float px, float py) {
         if (MathUtil.distanceSquare(prevPoint.getX(), prevPoint.getY(), px, py) > 25) {
             prevPoint.set(px, py);
-            tex.setPos(px - tex.getWidth() / 2, py - tex.getHeight() / 2);
-            // spawn particle (not implemented)
+            tex.setTranslationCenter(px, py);
+            // spawn particle
             t.particleList.add(new Particle(loader, px, py));
         }
     }
@@ -62,24 +59,10 @@ public class ParticleTracer {
     public void set(float px, float py) {
         this.active = true;
         prevPoint.set(px, py);
-        tex.setPos(px - tex.getWidth() / 2, py - tex.getHeight() / 2);
+        tex.setTranslationCenter(px, py);
     }
 
     public void reset() {
         this.active = false;
-    }
-
-    // Drawable
-    public int getOpacity()
-    {
-        return PixelFormat.OPAQUE;
-    }
-
-    public void setAlpha(int arg0)
-    {
-    }
-
-    public void setColorFilter(ColorFilter arg0)
-    {
     }
 }

@@ -1,12 +1,10 @@
 package teamdroid.com.speedtestarena.graphics;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by Kenny on 2016-10-20.
@@ -14,62 +12,123 @@ import static java.security.AccessController.getContext;
 
 public class Texture {
 
-    //Bitmap tex;
-    Matrix m;
+    Matrix coordinateMatrix;
+    ColorMatrix colorMatrix;
     Paint p;
     TextureLoader loader;
 
-    int texID = -1;
+    int textureID = -1;
 
-    int width;
-    int height;
-    float x;
-    float y;
+    float scaleX, scaleY, translateX, translateY;
+    int width, height;
 
-    public Texture(TextureLoader loc, int id, float px, float py, int alpha) {
-        //tex = BitmapFactory.decodeResource(context.getResources(), id);
-        texID = id;
+    public Texture(TextureLoader loc, int id, float px, float py, int alpha, ColorMatrix colorMatrix) {
+        // Setup the texture
+        textureID = id;
         loader = loc;
-        x = px;
-        y = py;
-        width = loader.getTexture(texID).getWidth();
-        height = loader.getTexture(texID).getHeight();
-        m = new Matrix();
-        this.p = new Paint();
-        p.setAlpha(alpha);
-        //System.out.println(p.getAlpha());
-    }
+        width = loader.getTexture(textureID).getWidth();
+        height = loader.getTexture(textureID).getHeight();
 
-    public void setPos(float px, float py) {
-        x = px;
-        y = py;
+        // Setup the coordinate matrix
+        scaleX = 1f;
+        scaleY = 1f;
+        translateX = 0f;
+        translateY = 0f;
+        coordinateMatrix = new Matrix();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+
+        // Setup the color matrix and Paint object
+        this.p = new Paint();
+
+        if (colorMatrix != null) {
+            this.colorMatrix = colorMatrix;
+            p.setColorFilter(new ColorMatrixColorFilter(this.colorMatrix));
+        }
+
+        p.setAlpha(alpha);
     }
 
     // Setters
     public void setAlpha(int alpha) {
         if (p.getAlpha() > 0) {
-            //System.out.println("BEFORE: " + p.getAlpha());
-            //System.out.println("RATE: " + alpha);
             p.setAlpha(p.getAlpha() + alpha);
-            //System.out.println("AFTER: " + p.getAlpha());
         }
     }
 
-    // Getters
-    public Bitmap getTex() {
-        return loader.getTexture(texID);
+    public void setTranslation(float x, float y) {
+        translateX = x;
+        translateY = y;
+
+        coordinateMatrix.reset();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
     }
 
+    public void setTranslationCenter(float x, float y) {
+        translateX = x - width / 2;
+        translateY = y - height / 2;
+
+        coordinateMatrix.reset();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+    }
+
+    public void setTranslationCenterScale(float x, float y) {
+        translateX = x - width * scaleX / 2;
+        translateY = y - height * scaleY / 2;
+
+        coordinateMatrix.reset();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+    }
+
+    public void setScale(float x, float y) {
+        //translateX = (translateX + (width * scaleX) / 2) - width * x / 2;
+        //translateY = (translateY + (height * scaleY) / 2) - height * y / 2;
+        scaleX = x;
+        scaleY = y;
+
+        coordinateMatrix.reset();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+    }
+
+    public void setScaleCenter(float x, float y) {
+        translateX = (translateX + (width * scaleX) / 2) - width * x / 2;
+        translateY = (translateY + (height * scaleY) / 2) - height * y / 2;
+        scaleX = x;
+        scaleY = y;
+
+        coordinateMatrix.reset();
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+    }
+
+    public void setColorMatrix(float[] m) {
+        colorMatrix.set(m);
+        p.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
+    }
+
+    // Getters
     public Matrix getMatrix() {
-        return m;
+        return coordinateMatrix;
+    }
+
+    public Bitmap getBitmap() {
+        return loader.getTexture(textureID);
+    }
+
+    public int getID() {
+        return textureID;
     }
 
     public Paint getP() { return p; }
 
-    public float getX() { return x; }
+    public float getX() { return translateX; }
 
     public float getY() {
-        return y;
+        return translateY;
     }
 
     public int getWidth() { return width; }

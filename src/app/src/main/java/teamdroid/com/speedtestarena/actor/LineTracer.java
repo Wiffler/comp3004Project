@@ -16,7 +16,7 @@ import teamdroid.com.speedtestarena.math.Vector2f;
  * Created by Kenny on 2016-10-19.
  */
 
-public class Tracer {
+public class LineTracer {
     private volatile boolean ready = false;
 
     private volatile Path path;
@@ -25,7 +25,7 @@ public class Tracer {
 
     private ArrayList<Vector2f> pointList;
 
-    public Tracer() {
+    public LineTracer() {
         p1 = new Vector2f(-1f, -1f);
         p2 = new Vector2f(-1f, -1f);
 

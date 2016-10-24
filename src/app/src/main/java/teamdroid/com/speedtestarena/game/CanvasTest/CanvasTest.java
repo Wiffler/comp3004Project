@@ -14,7 +14,7 @@ import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.CubicBezier;
 import teamdroid.com.speedtestarena.actor.Text;
-import teamdroid.com.speedtestarena.actor.Tracer;
+import teamdroid.com.speedtestarena.actor.LineTracer;
 
 /**
  * Created by Kenny on 2016-10-11.
@@ -32,7 +32,7 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
     private Circle pauseCircle, startCircle, pauseCircle2, startCircle2;
     public Text tickText;
     private CubicBezier curve1;
-    public Tracer trace;
+    public LineTracer trace;
 
     public CanvasTest(Context context) {
         super(context);
@@ -51,7 +51,7 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         startCircle2 = new Circle(0, 0, 100, "#008000");
         tickText = new Text(0, 0, "", "#C0C0C0");
         curve1 = new CubicBezier(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
-        trace = new Tracer();
+        trace = new LineTracer();
 
         render = new Renderer();
     }

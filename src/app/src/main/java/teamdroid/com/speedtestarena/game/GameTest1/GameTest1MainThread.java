@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import teamdroid.com.speedtestarena.R;
+import teamdroid.com.speedtestarena.actor.CubicBezier;
+import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
-import teamdroid.com.speedtestarena.io.EventQueue;
-import teamdroid.com.speedtestarena.sound.CanvasTestAudioThread;
-import teamdroid.com.speedtestarena.sound.CanvasTestSoundPoolThread;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.Text;
+import teamdroid.com.speedtestarena.sound.GameAudio;
 import teamdroid.com.speedtestarena.utility.GameTimer;
 
 import static android.R.id.list;
@@ -27,84 +28,82 @@ import static android.R.id.list;
 public class GameTest1MainThread extends Thread {
     // flag to hold game state
     private volatile boolean running = false;
+    private Random r = new Random();
 
     private SurfaceHolder surfaceHolder;
     private GameTest1 gamePanel;
-
-    private CanvasTestAudioThread audioThread;
-    private CanvasTestSoundPoolThread soundPoolThread;
+    private Context activity;
+    private GameAudio song;
     private GameTimer timer;
-    public EventQueue events;
-
-    private Random r = new Random();
 
     public int score = 0;
-
-    public Circle randCircle;
+    public HitCircle randCircle, randCircle2;
+    public CubicBezier curve;
     public Text scoreText;
     public Text tickText;
     public ParticleTracer trace;
     public ArrayList<Particle> particleList;
 
+    // Constructor(s)
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel, Context context) {
         super();
 
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
 
-        // Create the threads
-        audioThread = new CanvasTestAudioThread(context);
-        soundPoolThread =  new CanvasTestSoundPoolThread(context);
         timer = new GameTimer();
-        events = new EventQueue();
+    }
+
+    // Set and check the running state
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+    public boolean isRunning() { return this.running; }
+
+    // Creates the objects
+    private void create() {
+        // Load the textures
+        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.cursor);
+        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.cursortrail);
+        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.hitcircle);
+        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.hitcircleoverlay);
+        //gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.alpha);
 
         // Create the objects
-        randCircle = new Circle(0, 0, 100, "#008000");
+        song = new GameAudio();
+        song.createAudio(gamePanel.activity, R.raw.test_sound_file1);
+
+        randCircle = new HitCircle(gamePanel.textures, R.drawable.hitcircleoverlay, 0, 0, 50);
+        randCircle2 = new HitCircle(gamePanel.textures, R.drawable.hitcircleoverlay, 0, 0, 50);
+        curve  = new CubicBezier(0, 0, 0, 0, 0, 0, 0, 0);
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
         trace = new ParticleTracer(gamePanel.textures, this);
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public boolean isRunning() { return this.running; }
-
+    // Initialises the objects
     private void initialise() {
         // Setup the objects
         particleList = new ArrayList<Particle>();
         randCircle.setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
+        randCircle2.setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
-
-        // Setup the threads
-        audioThread.setRunning(true);
-        soundPoolThread.setRunning(true);
-
-        // Start the threads
-        audioThread.start();
-        soundPoolThread.start();
     }
 
+    // Cleanup threads and resources when game ends
     private void cleanup() {
-        // Stop the threads
-        try {
-            audioThread.setRunning(false);
-            soundPoolThread.setRunning(false);
-            audioThread.join();
-            soundPoolThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        song.pauseAudio();
+        song.cleanup();
     }
 
+    // Processes the event queue
     private void handleIO() {
         MotionEvent event;
         int action;
 
-        while (events.size() > 0) {
-            event = events.dequeue();
+        while (gamePanel.events.size() > 0) {
+            event = gamePanel.events.dequeue();
             action = event.getAction();
 
             if (action == MotionEvent.ACTION_DOWN) {
@@ -134,11 +133,24 @@ public class GameTest1MainThread extends Thread {
         }
     }
 
+    // Updates the state of the objects every tick
     private void updateState(long curTime) {
         // Update circle
         randCircle.update(curTime,
                 r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
                 r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
+        randCircle2.update(curTime,
+                r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
+                r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
+
+        curve.setStartPoint(randCircle.getX(), randCircle.getY());
+        curve.setControlPoint1(randCircle.getX(), randCircle.getY());
+        curve.setControlPoint2(randCircle2.getX(), randCircle2.getY());
+        curve.setEndPoint(randCircle2.getX(), randCircle2.getY());
+        curve.reconstruct();
+
+        randCircle.getOverlay().update();
+        randCircle2.getOverlay().update();
 
         // Update the score text
         scoreText.setText("Score: " + score);
@@ -164,13 +176,15 @@ public class GameTest1MainThread extends Thread {
         timer.setRunning(true);
         timer.start();
 
-        // initialise the objects
+        // create and initialise the objects
+        create();
         initialise();
 
-        // Start the game
-        while (!gamePanel.ready) {
-            audioThread.startAudio();
-        }
+        // Set the ready state for the UI
+        gamePanel.ready = true;
+
+        // Start the audio
+        song.startAudio();
 
         while (this.running) {
             while (timer.getTicks() == 0) {

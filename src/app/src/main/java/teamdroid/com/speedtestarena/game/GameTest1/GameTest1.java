@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.TextureLoader;
+import teamdroid.com.speedtestarena.io.EventQueue;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -20,31 +21,28 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     private Renderer render;
     public TextureLoader textures;
+    public EventQueue events;
+
     private GameTest1MainThread gameThread;
+    public static Context activity;
 
     public GameTest1(Context context) {
         super(context);
+        activity = context;
         getHolder().addCallback(this);
-
-        // Create the objects
-        render = new Renderer();
-        textures = new TextureLoader();
-        // Load the textures
-        textures.loadTexture(context, R.drawable.cursor);
-        textures.loadTexture(context, R.drawable.cursortrail);
-
-        // Create the game thread
-        gameThread = new GameTest1MainThread(getHolder(), this, context);
-
         setFocusable(true);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // Set the state of the threads
-        gameThread.setRunning(true);
+        // Create the objects
+        render = new Renderer();
+        textures = new TextureLoader();
+        events = new EventQueue();
 
-        // Start the threads
+        // Create the game thread
+        gameThread = new GameTest1MainThread(getHolder(), this, activity);
+        gameThread.setRunning(true);
         gameThread.start();
 
         // Allow the view to update
@@ -58,10 +56,9 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
             try {
                 // wait for the threads to end
                 gameThread.join();
-
                 retry = false;
+
             } catch (InterruptedException e) {
-                // try again shutting down the thread
                 System.out.println("Thread exit failed.");
             }
         }
@@ -71,40 +68,45 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (gameThread.isRunning()) {
+        canvas.drawRGB(0, 0, 0);
+
+        if (ready) {
             drawGame(canvas);
         }
     }
 
+    // surfaceChanged event is called when the screen is first created or rotated
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             System.out.println("Cannot draw. Canvas is null.");
         } else {
-            drawGame(canvas);
+            this.draw(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        gameThread.events.enqueue(event);
-
+        if (ready) {
+            events.enqueue(event);
+        }
         return true;
     }
 
     private void drawGame(Canvas canvas) {
-        canvas.drawRGB(0, 0, 0);
-
+        render.render(canvas, gameThread.curve);
         render.render(canvas, gameThread.randCircle);
-        render.render(canvas, gameThread.tickText);
-        render.render(canvas, gameThread.scoreText);
+        render.render(canvas, gameThread.randCircle2);
 
         render.render(canvas, gameThread.trace);
 
         for (int i = 0; i < gameThread.particleList.size(); i++) {
             render.render(canvas, gameThread.particleList.get(i));
         }
+
+        render.render(canvas, gameThread.tickText);
+        render.render(canvas, gameThread.scoreText);
 
         ready = true;
     }

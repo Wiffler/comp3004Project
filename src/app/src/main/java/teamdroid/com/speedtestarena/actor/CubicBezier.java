@@ -1,6 +1,7 @@
 package teamdroid.com.speedtestarena.actor;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -29,6 +30,7 @@ public class CubicBezier {
         path.cubicTo(cx2, cy2, cx3, cy3, cx4, cy4);
 
         p = new Paint();
+        p.setColor(Color.parseColor("#FFFFFF"));
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeCap(Paint.Cap.ROUND);
         p.setStrokeWidth(3.0f);
@@ -44,6 +46,28 @@ public class CubicBezier {
 
         path.moveTo(cx1, cy1);
         path.cubicTo(cx2, cy2, cx3, cy3, cx4, cy4);
+    }
+
+    public void setStartPoint(float x, float y) {
+        c1.set(x, y);
+    }
+
+    public void setControlPoint1(float x, float y) {
+        c2.set(x, y);
+    }
+
+    public void setControlPoint2(float x, float y) {
+        c3.set(x, y);
+    }
+
+    public void setEndPoint(float x, float y) {
+        c4.set(x, y);
+    }
+
+    public void reconstruct() {
+        path.reset();
+        path.moveTo(c1.getX(), c1.getY());
+        path.cubicTo(c2.getX(), c2.getY(), c3.getX(), c3.getY(), c4.getX(), c4.getY());
     }
 
     // Getters
