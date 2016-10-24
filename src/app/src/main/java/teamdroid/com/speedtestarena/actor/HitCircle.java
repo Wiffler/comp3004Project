@@ -1,12 +1,9 @@
 package teamdroid.com.speedtestarena.actor;
 
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
-import android.graphics.Paint;
 
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Texture;
-import teamdroid.com.speedtestarena.graphics.TextureLoader;
 import teamdroid.com.speedtestarena.math.MathUtil;
 
 /**
@@ -14,54 +11,37 @@ import teamdroid.com.speedtestarena.math.MathUtil;
  */
 
 public class HitCircle {
+    private Texture tex;
+    private HitCircleOverlay overlay;
+
     private float centerx;
     private float centery;
     private float radius;
-    //private Paint p;
-
-    private Texture tex;
-
-    private HitCircleOverlay overlay;
 
     private long prevTime = 0;
 
-    public HitCircle(TextureLoader loc, int id, float x, float y, float r) {
+    public HitCircle(int imageID, float x, float y, float r) {
         centerx = x;
         centery = y;
         radius = r;
-
-        //p = new Paint();
-        //p.setColor(Color.BLUE);
 
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
                 0, 1f, 0, 0, 50,
                 0, 0, 1f, 0, 0,
-                0, 0, 0, 1.35f, 0};
+                0, 0, 0, 1f, 0};
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0f);
         colorMatrix.set(colorTransform);
 
-        tex = new Texture(loc, id, x, y, 255, colorMatrix);
+        tex = new Texture(imageID, x, y, 255, colorMatrix);
         tex.setScale(0.28f, 0.28f);
         tex.setTranslationCenterScale(x, y);
 
-        //p = new Paint();
-
-        overlay = new HitCircleOverlay(x, y, 15, R.drawable.hitcircleoverlay, loc);
+        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, 15);
     }
 
     // Setters
-    /*
-    public void setColor(String c) {
-        // Use Color.parseColor to define HTML colors
-        p.setColor(Color.parseColor(c));
-    }
-
-    public void setColor(int c) {
-        p.setColor(c);
-    }*/
-
     public void setCenter(float px, float py) {
         centerx = px;
         centery = py;
@@ -80,12 +60,6 @@ public class HitCircle {
     public float getR() {
         return this.radius;
     }
-
-    /*
-    public Paint getP() {
-        return this.p;
-    }
-    */
 
     public Texture getT() {
         return this.tex;
@@ -112,6 +86,8 @@ public class HitCircle {
             //System.out.println("Overlay     tX: " + overlay.getT().getX() + " tY: " + overlay.getT().getY());
 
             prevTime = curTime;
+        } else {
+            overlay.update();
         }
     }
 }

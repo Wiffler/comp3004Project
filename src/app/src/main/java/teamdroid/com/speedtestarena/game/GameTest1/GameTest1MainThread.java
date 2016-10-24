@@ -1,7 +1,6 @@
 package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -14,12 +13,10 @@ import teamdroid.com.speedtestarena.actor.CubicBezier;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
-import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.sound.GameAudio;
 import teamdroid.com.speedtestarena.utility.GameTimer;
 
-import static android.R.id.list;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -32,7 +29,6 @@ public class GameTest1MainThread extends Thread {
 
     private SurfaceHolder surfaceHolder;
     private GameTest1 gamePanel;
-    private Context activity;
     private GameAudio song;
     private GameTimer timer;
 
@@ -45,7 +41,7 @@ public class GameTest1MainThread extends Thread {
     public ArrayList<Particle> particleList;
 
     // Constructor(s)
-    public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel, Context context) {
+    public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel) {
         super();
 
         this.surfaceHolder = surfaceHolder;
@@ -63,30 +59,27 @@ public class GameTest1MainThread extends Thread {
     // Creates the objects
     private void create() {
         // Load the textures
-        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.cursor);
-        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.cursortrail);
-        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.hitcircle);
-        gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.hitcircleoverlay);
-        //gamePanel.textures.loadTexture(gamePanel.activity, R.drawable.alpha);
+        int[] idList = {R.drawable.cursor, R.drawable.cursortrail,
+                        R.drawable.hitcircle, R.drawable.hitcircleoverlay};
+        gamePanel.render.loadBitmaps(gamePanel.activity, idList);
 
         // Create the objects
         song = new GameAudio();
         song.createAudio(gamePanel.activity, R.raw.test_sound_file1);
 
-        randCircle = new HitCircle(gamePanel.textures, R.drawable.hitcircleoverlay, 0, 0, 50);
-        randCircle2 = new HitCircle(gamePanel.textures, R.drawable.hitcircleoverlay, 0, 0, 50);
+        randCircle = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
+        randCircle2 = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
         curve  = new CubicBezier(0, 0, 0, 0, 0, 0, 0, 0);
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
         trace = new ParticleTracer(gamePanel.textures, this);
+
+        particleList = new ArrayList<Particle>();
     }
 
     // Initialises the objects
     private void initialise() {
         // Setup the objects
-        particleList = new ArrayList<Particle>();
-        randCircle.setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
-        randCircle2.setCenter(gamePanel.getWidth() / 2, gamePanel.getHeight() / 2);
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
     }
@@ -149,8 +142,8 @@ public class GameTest1MainThread extends Thread {
         curve.setEndPoint(randCircle2.getX(), randCircle2.getY());
         curve.reconstruct();
 
-        randCircle.getOverlay().update();
-        randCircle2.getOverlay().update();
+        //randCircle.getOverlay().update();
+        //randCircle2.getOverlay().update();
 
         // Update the score text
         scoreText.setText("Score: " + score);

@@ -5,8 +5,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.Paint;
 
 import teamdroid.com.speedtestarena.graphics.Texture;
-import teamdroid.com.speedtestarena.graphics.TextureLoader;
-import teamdroid.com.speedtestarena.math.MathUtil;
+import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 
 /**
  * Created by Kenny on 2016-10-24.
@@ -22,7 +21,7 @@ public class HitCircleOverlay {
 
     private long prevTime = 0;
 
-    public HitCircleOverlay(float x, float y, int r, int texID, TextureLoader loader) {
+    public HitCircleOverlay(int texID, float x, float y, int r) {
         centerx = x;
         centery = y;
         radius = r;
@@ -31,15 +30,15 @@ public class HitCircleOverlay {
         p.setColor(Color.BLUE);
 
         float[] colorTransform = {
-                0, 0f, 0, 0, 0,
-                0, 0, 0f, 0, 0,
-                0, 0, 0, 1f, 0,
+                1f, 0, 0, 0, 0,
+                0, 1f, 0, 0, 0,
+                0, 0, 1f, 0, 0,
                 0, 0, 0, 1f, 0};
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0f);
         colorMatrix.set(colorTransform);
 
-        t = new Texture(loader, texID, x, y, 255, colorMatrix);
+        t = new Texture(texID, x, y, 255, colorMatrix);
     }
 
     // Setters
@@ -91,16 +90,16 @@ public class HitCircleOverlay {
             t.setScaleCenter(scale, scale);
 
             float[] colorTransform = {
-                    0, 0f, 0, 0, 0,
-                    0, 0, 0f, 0, 0,
-                    0, 0, 0, 1f, 0,
+                    1f, 0, 0, 0, 0,
+                    0, 1f, 0, 0, 0,
+                    0, 0, 1f, 0, 0,
                     0, 0, 0, 1f, 0};
             t.setColorMatrix(colorTransform);
         } else {
             float[] colorTransform = {
+                    1f, 0, 0, 0, 0,
                     0, 1f, 0, 0, 0,
-                    0, 0, 0f, 0, 0,
-                    0, 0, 0, 0f, 0,
+                    0, 0, 1f, 0, 0,
                     0, 0, 0, 1f, 0};
             t.setColorMatrix(colorTransform);
         }

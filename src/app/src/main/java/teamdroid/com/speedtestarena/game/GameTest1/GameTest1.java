@@ -6,9 +6,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
-import teamdroid.com.speedtestarena.graphics.TextureLoader;
+import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
 
 /**
@@ -19,8 +18,8 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public volatile boolean ready = false;
 
-    private Renderer render;
-    public TextureLoader textures;
+    public Renderer render;
+    public BitmapLoader textures;
     public EventQueue events;
 
     private GameTest1MainThread gameThread;
@@ -37,11 +36,11 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         // Create the objects
         render = new Renderer();
-        textures = new TextureLoader();
+        textures = new BitmapLoader();
         events = new EventQueue();
 
         // Create the game thread
-        gameThread = new GameTest1MainThread(getHolder(), this, activity);
+        gameThread = new GameTest1MainThread(getHolder(), this);
         gameThread.setRunning(true);
         gameThread.start();
 

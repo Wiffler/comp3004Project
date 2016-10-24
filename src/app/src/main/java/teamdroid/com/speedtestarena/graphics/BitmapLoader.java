@@ -10,24 +10,30 @@ import java.util.Hashtable;
  * Created by Kenny on 2016-10-21.
  */
 
-public class TextureLoader {
+public class BitmapLoader {
 
     private Hashtable<Integer, Bitmap> bitmapTable;
 
-    public TextureLoader() {
+    public BitmapLoader() {
         bitmapTable = new Hashtable<Integer, Bitmap>();
     }
 
-    public int loadTexture(Context context, int id) {
+    public int loadBitmap(Context context, int id) {
         bitmapTable.put(id, BitmapFactory.decodeResource(context.getResources(), id));
         return id;
     }
 
-    public void unloadTexture(int id) {
+    public void loadBitmapList(Context context, int[] id) {
+        for (int i = 0; i < id.length; i++) {
+            bitmapTable.put(id[i], BitmapFactory.decodeResource(context.getResources(), id[i]));
+        }
+    }
+
+    public void unloadBitmap(int id) {
         bitmapTable.remove(id);
     }
 
-    public Bitmap getTexture(int id) {
+    public Bitmap getBitmap(int id) {
         return bitmapTable.get(id);
     }
 

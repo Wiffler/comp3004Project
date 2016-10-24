@@ -1,13 +1,10 @@
 package teamdroid.com.speedtestarena.actor;
 
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.game.GameTest1.GameTest1MainThread;
 import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.graphics.Texture;
-import teamdroid.com.speedtestarena.graphics.TextureLoader;
+import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.math.MathUtil;
 import teamdroid.com.speedtestarena.math.Vector2f;
 
@@ -21,20 +18,17 @@ public class ParticleTracer {
     private Vector2f prevPoint;
     private Texture tex;
     private GameTest1MainThread t;
-    private TextureLoader loader;
 
-    public ParticleTracer(TextureLoader loader) {
-        this.loader = loader;
+    public ParticleTracer(BitmapLoader loader) {
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255, null);
+        tex = new Texture(R.drawable.cursor, 0, 0, 255, null);
     }
 
-    public ParticleTracer(TextureLoader loader, GameTest1MainThread thread) {
-        this.loader = loader;
+    public ParticleTracer(BitmapLoader loader, GameTest1MainThread thread) {
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(loader, R.drawable.cursor, 0, 0, 255, null);
+        tex = new Texture(R.drawable.cursor, 0, 0, 255, null);
         t = thread;
     }
 
@@ -52,7 +46,7 @@ public class ParticleTracer {
             prevPoint.set(px, py);
             tex.setTranslationCenter(px, py);
             // spawn particle
-            t.particleList.add(new Particle(loader, px, py));
+            t.particleList.add(new Particle(px, py));
         }
     }
 

@@ -1,8 +1,5 @@
 package teamdroid.com.speedtestarena.graphics;
 
-import android.content.Context;
-import android.graphics.Paint;
-
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.math.Vector2f;
 
@@ -16,10 +13,10 @@ public class Particle {
     private Texture tex;
     private Vector2f pos;
 
-    public Particle(TextureLoader loader, float px, float py) {
+    public Particle(float px, float py) {
         decayRate = 5;
         pos = new Vector2f(px, py);
-        tex = new Texture(loader, R.drawable.cursortrail, 0, 0, 255, null);
+        tex = new Texture(R.drawable.cursortrail, 0, 0, 255, null);
         tex.setTranslationCenter(px, py);
     }
 

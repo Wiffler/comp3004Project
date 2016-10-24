@@ -1,5 +1,6 @@
 package teamdroid.com.speedtestarena.graphics;
 
+import android.content.Context;
 import android.graphics.Canvas;
 
 import teamdroid.com.speedtestarena.actor.Circle;
@@ -16,8 +17,23 @@ import teamdroid.com.speedtestarena.actor.HitCircleOverlay;
 
 public class Renderer {
 
+    private static BitmapLoader bitmaps = new BitmapLoader();
+
     // Constructor
     public Renderer() {
+    }
+
+    // Bitmap loading
+    public static void loadBitmaps(Context context, int[] idList) {
+        bitmaps.loadBitmapList(context, idList);
+    }
+
+    public static float getBitmapHeight(int id) {
+        return bitmaps.getBitmap(id).getHeight();
+    }
+
+    public static float getBitmapWidth(int id) {
+        return bitmaps.getBitmap(id).getWidth();
     }
 
     // Actor rendering
@@ -44,7 +60,7 @@ public class Renderer {
     }
 
     public static void render(Canvas canvas, Texture obj) {
-        canvas.drawBitmap(obj.getBitmap(), obj.getMatrix(), obj.getP());
+        canvas.drawBitmap(bitmaps.getBitmap(obj.getID()), obj.getMatrix(), obj.getP());
     }
 
     public static void render(Canvas canvas, Particle obj) {

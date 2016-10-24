@@ -12,22 +12,19 @@ import android.graphics.Paint;
 
 public class Texture {
 
-    Matrix coordinateMatrix;
-    ColorMatrix colorMatrix;
-    Paint p;
-    TextureLoader loader;
+    private Matrix coordinateMatrix;
+    private ColorMatrix colorMatrix;
+    private Paint p;
 
-    int textureID = -1;
+    private int textureID = -1;
 
-    float scaleX, scaleY, translateX, translateY;
-    int width, height;
+    private float scaleX, scaleY, translateX, translateY, width, height;
 
-    public Texture(TextureLoader loc, int id, float px, float py, int alpha, ColorMatrix colorMatrix) {
+    public Texture(int id, float px, float py, int alpha, ColorMatrix colorMatrix) {
         // Setup the texture
         textureID = id;
-        loader = loc;
-        width = loader.getTexture(textureID).getWidth();
-        height = loader.getTexture(textureID).getHeight();
+        width = Renderer.getBitmapWidth(textureID);
+        height = Renderer.getBitmapHeight(textureID);
 
         // Setup the coordinate matrix
         scaleX = 1f;
@@ -84,8 +81,6 @@ public class Texture {
     }
 
     public void setScale(float x, float y) {
-        //translateX = (translateX + (width * scaleX) / 2) - width * x / 2;
-        //translateY = (translateY + (height * scaleY) / 2) - height * y / 2;
         scaleX = x;
         scaleY = y;
 
@@ -115,9 +110,11 @@ public class Texture {
         return coordinateMatrix;
     }
 
+    /*
     public Bitmap getBitmap() {
         return loader.getTexture(textureID);
     }
+    */
 
     public int getID() {
         return textureID;
@@ -131,9 +128,9 @@ public class Texture {
         return translateY;
     }
 
-    public int getWidth() { return width; }
+    public float getWidth() { return width; }
 
-    public int getHeight() { return height; }
+    public float getHeight() { return height; }
 
     public int getAlpha() { return p.getAlpha(); }
 }
