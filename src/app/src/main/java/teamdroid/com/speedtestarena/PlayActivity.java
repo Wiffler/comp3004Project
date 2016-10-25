@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTestActivity;
 import teamdroid.com.speedtestarena.game.GameTest1.GameTest1Activity;
+import teamdroid.com.speedtestarena.game.OpenGLESTest.OpenGLESTestActivity;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -26,7 +27,7 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create array adapter
-        String[] mylist = {"Canvas Test", "Game Test 1"};
+        String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1"};
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_play_textview, mylist);
 
         // Create the list view and set the adapter
@@ -43,6 +44,8 @@ public class PlayActivity extends AppCompatActivity {
                     startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
                 } else if ((String) listItem == "Game Test 1") {
                     startActivity(new Intent(PlayActivity.this, GameTest1Activity.class));
+                } else if ((String) listItem == "OpenGL ES Test 1") {
+                    startActivity(new Intent(PlayActivity.this, OpenGLESTestActivity.class));
                 }
             }
         });

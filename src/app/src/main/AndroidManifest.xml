@@ -30,6 +30,7 @@
         </activity>
         <activity android:name=".game.CanvasTest.CanvasTestActivity" />
         <activity android:name=".game.GameTest1.GameTest1Activity"></activity>
+        <activity android:name=".game.OpenGLESTest.OpenGLESTestActivity"></activity>
     </application>
 
 </manifest>

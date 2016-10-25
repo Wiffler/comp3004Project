@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.actor.CubicBezier;
+import teamdroid.com.speedtestarena.actor.ShadowedCurve;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
@@ -34,7 +34,7 @@ public class GameTest1MainThread extends Thread {
 
     public int score = 0;
     public HitCircle randCircle, randCircle2;
-    public CubicBezier curve;
+    public ShadowedCurve curve;
     public Text scoreText;
     public Text tickText;
     public ParticleTracer trace;
@@ -69,7 +69,7 @@ public class GameTest1MainThread extends Thread {
 
         randCircle = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
         randCircle2 = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
-        curve  = new CubicBezier(0, 0, 0, 0, 0, 0, 0, 0);
+        curve  = new ShadowedCurve(0, 0, 0, 0, 0, 0, 0, 0);
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
         trace = new ParticleTracer(gamePanel.textures, this);
