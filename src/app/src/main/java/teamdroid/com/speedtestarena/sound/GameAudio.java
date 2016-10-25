@@ -39,6 +39,22 @@ public class GameAudio {
         }
     }
 
+    public long getPosition() {
+        if (mp != null) {
+            return mp.getCurrentPosition();
+        } else {
+            return -2;
+        }
+    }
+
+    public long getDuration() {
+        if (mp != null) {
+            return mp.getDuration();
+        } else {
+            return -2;
+        }
+    }
+
     public void cleanup() {
         if (mp != null) {
             mp.release();

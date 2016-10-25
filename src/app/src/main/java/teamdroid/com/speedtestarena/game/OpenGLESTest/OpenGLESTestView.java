@@ -1,5 +1,6 @@
 package teamdroid.com.speedtestarena.game.OpenGLESTest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
@@ -55,8 +56,14 @@ public class OpenGLESTestView extends GLSurfaceView {
         float y = e.getY();
 
         switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_DOWN:
+                if (e.getY() > getHeight() - 50) {
+                    //gameThread.setRunning(false);
+                    ((Activity) getContext()).finish();
+                }
+                break;
 
+            case MotionEvent.ACTION_MOVE:
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
 
@@ -74,6 +81,7 @@ public class OpenGLESTestView extends GLSurfaceView {
                         render.getAngle() +
                                 ((dx + dy) * TOUCH_SCALE_FACTOR));
                 requestRender();
+                break;
         }
 
         mPreviousX = x;

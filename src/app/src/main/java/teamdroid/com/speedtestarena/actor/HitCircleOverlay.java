@@ -21,10 +21,15 @@ public class HitCircleOverlay {
 
     private long prevTime = 0;
 
-    public HitCircleOverlay(int texID, float x, float y, int r) {
+    private float contractionRate = 0;
+
+    public HitCircleOverlay(int texID, float x, float y, int r, float contractionRate, long startTime) {
         centerx = x;
         centery = y;
         radius = r;
+
+        this.prevTime = startTime;
+        this.contractionRate = contractionRate;
 
         p = new Paint();
         p.setColor(Color.BLUE);
@@ -39,6 +44,8 @@ public class HitCircleOverlay {
         colorMatrix.set(colorTransform);
 
         t = new Texture(texID, x, y, 255, colorMatrix);
+        t.setRotation(180, t.getWidth() / 2, t.getHeight() / 2);
+        t.setTranslationCenter(x, y);
     }
 
     // Setters
@@ -84,9 +91,11 @@ public class HitCircleOverlay {
 
     public Texture getT() { return this.t; }
 
-    public void update() {
-        if (scale > 0.30) {
-            scale -= 0.01;
+    public void update(long songPos) {
+        if (scale > 0.28) {
+            scale -= contractionRate * (songPos - prevTime);
+            prevTime = songPos;
+
             t.setScaleCenter(scale, scale);
 
             float[] colorTransform = {

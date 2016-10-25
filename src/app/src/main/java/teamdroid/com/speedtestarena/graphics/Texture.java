@@ -18,7 +18,7 @@ public class Texture {
 
     private int textureID = -1;
 
-    private float scaleX, scaleY, translateX, translateY, width, height;
+    private float scaleX, scaleY, translateX, translateY, angleDegrees, rotationX, rotationY, width, height;
 
     public Texture(int id, float px, float py, int alpha, ColorMatrix colorMatrix) {
         // Setup the texture
@@ -31,7 +31,11 @@ public class Texture {
         scaleY = 1f;
         translateX = 0f;
         translateY = 0f;
+        angleDegrees = 0f;
+        rotationX = 0f;
+        rotationY = 0f;
         coordinateMatrix = new Matrix();
+        coordinateMatrix.postRotate(angleDegrees, rotationX, rotationY);
         coordinateMatrix.postScale(scaleX, scaleY);
         coordinateMatrix.postTranslate(translateX, translateY);
 
@@ -57,45 +61,52 @@ public class Texture {
         translateX = x;
         translateY = y;
 
-        coordinateMatrix.reset();
-        coordinateMatrix.postScale(scaleX, scaleY);
-        coordinateMatrix.postTranslate(translateX, translateY);
+        recomputeCoordinateMatrix();
     }
 
     public void setTranslationCenter(float x, float y) {
         translateX = x - width / 2;
         translateY = y - height / 2;
 
-        coordinateMatrix.reset();
-        coordinateMatrix.postScale(scaleX, scaleY);
-        coordinateMatrix.postTranslate(translateX, translateY);
+        recomputeCoordinateMatrix();
     }
 
     public void setTranslationCenterScale(float x, float y) {
         translateX = x - width * scaleX / 2;
         translateY = y - height * scaleY / 2;
 
-        coordinateMatrix.reset();
-        coordinateMatrix.postScale(scaleX, scaleY);
-        coordinateMatrix.postTranslate(translateX, translateY);
+        recomputeCoordinateMatrix();
     }
 
     public void setScale(float x, float y) {
         scaleX = x;
         scaleY = y;
 
-        coordinateMatrix.reset();
-        coordinateMatrix.postScale(scaleX, scaleY);
-        coordinateMatrix.postTranslate(translateX, translateY);
+        recomputeCoordinateMatrix();
     }
 
     public void setScaleCenter(float x, float y) {
+        //rotationX = (width * scaleX) / 2;
+        //rotationY = (height * scaleY) / 2;
         translateX = (translateX + (width * scaleX) / 2) - width * x / 2;
         translateY = (translateY + (height * scaleY) / 2) - height * y / 2;
         scaleX = x;
         scaleY = y;
 
+        recomputeCoordinateMatrix();
+    }
+
+    public void setRotation(float degrees, float x, float y) {
+        angleDegrees = degrees;
+        rotationX = x;
+        rotationY = y;
+
+        recomputeCoordinateMatrix();
+    }
+
+    private void recomputeCoordinateMatrix() {
         coordinateMatrix.reset();
+        coordinateMatrix.postRotate(angleDegrees, rotationX, rotationY);
         coordinateMatrix.postScale(scaleX, scaleY);
         coordinateMatrix.postTranslate(translateX, translateY);
     }

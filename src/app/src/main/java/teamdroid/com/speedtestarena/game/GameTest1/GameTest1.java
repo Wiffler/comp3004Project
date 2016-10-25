@@ -94,9 +94,13 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawGame(Canvas canvas) {
-        render.render(canvas, gameThread.curve);
-        render.render(canvas, gameThread.randCircle);
-        render.render(canvas, gameThread.randCircle2);
+        //render.render(canvas, gameThread.curve);
+        //render.render(canvas, gameThread.randCircle);
+        //render.render(canvas, gameThread.randCircle2);
+
+        for (int i = 0; i < gameThread.hitcircleList.size(); i++) {
+            render.render(canvas, gameThread.hitcircleList.get(i));
+        }
 
         render.render(canvas, gameThread.trace);
 

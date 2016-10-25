@@ -18,12 +18,16 @@ public class HitCircle {
     private float centery;
     private float radius;
 
-    private long prevTime = 0;
+    private long startTime = 0;
+    private long deathTime = 0;
 
-    public HitCircle(int imageID, float x, float y, float r) {
+    public HitCircle(int imageID, float x, float y, float r, long startTime, long deathTime) {
         centerx = x;
         centery = y;
-        radius = r;
+        //radius = r;
+
+        this.startTime = startTime;
+        this.deathTime = deathTime;
 
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
@@ -38,7 +42,11 @@ public class HitCircle {
         tex.setScale(0.28f, 0.28f);
         tex.setTranslationCenterScale(x, y);
 
-        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, 15);
+        radius = tex.getWidth() / 2; // assuming square bitmap
+
+        // Create the overlay object
+        float contract = (float) ((1f - 0.28f) / (deathTime - startTime));
+        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, 15, contract, startTime);
     }
 
     // Setters
@@ -75,6 +83,7 @@ public class HitCircle {
         }
     }
 
+    /*
     public void update(long curTime, float x, float y) {
         if (curTime - prevTime > 2000) {
             centerx = x;
@@ -88,6 +97,16 @@ public class HitCircle {
             prevTime = curTime;
         } else {
             overlay.update();
+        }
+    }
+    */
+
+    public boolean update(long songPos) {
+        if (songPos < deathTime) {
+            overlay.update(songPos);
+            return true;
+        } else {
+            return false;
         }
     }
 }
