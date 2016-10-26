@@ -48,17 +48,19 @@ public class HitMap {
     private ArrayList<Integer> measureMap;
     public volatile int measureMapIndex = 0;
 
-    public ArrayList<Long> hitcircleSpawnTimes;
-    public ArrayList<Long> hitcircleDeathTimes;
-    public ArrayList<Integer> hitcircleLocation;
+    //public ArrayList<Long> hitcircleSpawnTimes;
+    //public ArrayList<Long> hitcircleDeathTimes;
+    //public ArrayList<Integer> hitcircleLocation;
+    public ArrayList<HitInfo> spawnInfoList;
     public volatile int spawnTimeIndex;
 
     public HitMap() {
         spawnMap = new ArrayList<Integer>();
         measureMap = new ArrayList<Integer>();
-        hitcircleSpawnTimes = new ArrayList<Long>();
-        hitcircleDeathTimes = new ArrayList<Long>();
-        hitcircleLocation = new ArrayList<Integer>();
+        //hitcircleSpawnTimes = new ArrayList<Long>();
+        //hitcircleDeathTimes = new ArrayList<Long>();
+        //hitcircleLocation = new ArrayList<Integer>();
+        spawnInfoList = new ArrayList<HitInfo>();
     }
 
     // Setters
@@ -116,6 +118,10 @@ public class HitMap {
         double bmpsInterval = 60000 / bpms;
         long musicTime = 0;
 
+        long spawnTime, deathTime, beatTime;
+        long startDelay = -1000;
+        long endDelay = 100;
+
         // test
         offset = -1 * offset;
 
@@ -127,143 +133,101 @@ public class HitMap {
 
             //System.out.println("i: " + i + " BPMS: " + bpms + " musicTime: " + musicTime + " Offset: " + offset + " Start Time : " + (musicTime + offset));
 
+            // Compute the spawn and death time for a given line in the #NOTES section of the .sm file
+            spawnTime = musicTime + offset + startDelay;
+            deathTime = musicTime + offset + endDelay;
+            beatTime = musicTime + offset;
+
             switch (code) {
                 case 0: // 0000
                     break;
                 case 1: // 1000
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 2: // 0100
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 3: // 0010
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 4: // 0001
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 5: // 1100
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 6: // 1010
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 7: // 1001
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 8: // 0110
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 9: // 0101
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 10: // 0011
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 11: // 1110
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 12: // 1101
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 13: // 1011
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 14: // 0111
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
                 case 15: // 1111
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(0 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(1 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(2 + 4 * vinterval);
-                    hitcircleSpawnTimes.add(musicTime + offset);
-                    hitcircleDeathTimes.add(musicTime + 2 * offset);
-                    hitcircleLocation.add(3 + 4 * vinterval);
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 0 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 1 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 2 + 4 * vinterval));
+                    spawnInfoList.add(new HitInfo(spawnTime, deathTime, beatTime, 3 + 4 * vinterval));
+                    vinterval = updateVInterval(vinterval, vintervalMax);
                     break;
             }
 
             // check the interval
+            /*
             if (vinterval == vintervalMax) {
                 vinterval = 0;
             } else {
                 vinterval++;
             }
+            */
 
             musicTime += ((long) (bmpsInterval / (measureLength / 4)));
 
@@ -280,5 +244,13 @@ public class HitMap {
         }
 
         System.out.println(measureMap.size());
+    }
+
+    private int updateVInterval(int vinterval, int vintervalMax) {
+        if (vinterval == vintervalMax) {
+            return 0;
+        } else {
+            return vinterval + 1;
+        }
     }
 }

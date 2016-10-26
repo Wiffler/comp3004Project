@@ -12,27 +12,24 @@ import teamdroid.com.speedtestarena.graphics.BitmapLoader;
  */
 
 public class HitCircleOverlay {
+    private static float START_SCALE = 1f;
+    private static float END_SCALE = 0.28f;
+
     private float centerx;
     private float centery;
-    private int radius;
     private float scale = 1;
-    private Paint p;
     private Texture t;
 
     private long prevTime = 0;
 
     private float contractionRate = 0;
 
-    public HitCircleOverlay(int texID, float x, float y, int r, float contractionRate, long startTime) {
+    public HitCircleOverlay(int texID, float x, float y, long startTime, long endTime) {
         centerx = x;
         centery = y;
-        radius = r;
 
-        this.prevTime = startTime;
-        this.contractionRate = contractionRate;
-
-        p = new Paint();
-        p.setColor(Color.BLUE);
+        prevTime = startTime;
+        contractionRate = (END_SCALE - START_SCALE) / (endTime - startTime);
 
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
@@ -46,22 +43,14 @@ public class HitCircleOverlay {
         t = new Texture(texID, x, y, 255, colorMatrix);
         t.setRotation(180, t.getWidth() / 2, t.getHeight() / 2);
         t.setTranslationCenter(x, y);
-    }
-
-    // Setters
-    public void setColor(String c) {
-        // Use Color.parseColor to define HTML colors
-        p.setColor(Color.parseColor(c));
-    }
-
-    public void setColor(int c) {
-        p.setColor(c);
+        t.recomputeCoordinateMatrix();
     }
 
     public void setCenter(float x, float y) {
         centerx = x;
         centery = y;
         t.setTranslationCenter(x, y);
+        t.recomputeCoordinateMatrix();
     }
 
     public void reset(float x, float y) {
@@ -70,6 +59,7 @@ public class HitCircleOverlay {
         scale = 1f;
         t.setScaleCenter(scale, scale);
         t.setTranslationCenter(x, y);
+        t.recomputeCoordinateMatrix();
     }
 
     // Getters
@@ -81,22 +71,15 @@ public class HitCircleOverlay {
         return this.centery;
     }
 
-    public int getR() {
-        return this.radius;
-    }
-
-    public Paint getP() {
-        return this.p;
-    }
-
     public Texture getT() { return this.t; }
 
     public void update(long songPos) {
-        if (scale > 0.28) {
-            scale -= contractionRate * (songPos - prevTime);
+        if (scale > END_SCALE) {
+            scale += contractionRate * (songPos - prevTime);
             prevTime = songPos;
 
             t.setScaleCenter(scale, scale);
+            t.recomputeCoordinateMatrix();
 
             float[] colorTransform = {
                     1f, 0, 0, 0, 0,

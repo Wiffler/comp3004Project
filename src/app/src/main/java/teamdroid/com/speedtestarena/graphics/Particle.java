@@ -18,6 +18,7 @@ public class Particle {
         pos = new Vector2f(px, py);
         tex = new Texture(R.drawable.cursortrail, 0, 0, 255, null);
         tex.setTranslationCenter(px, py);
+        tex.recomputeCoordinateMatrix();
     }
 
     public Texture getTex() {

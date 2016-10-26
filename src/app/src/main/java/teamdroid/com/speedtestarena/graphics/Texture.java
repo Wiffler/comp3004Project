@@ -1,6 +1,7 @@
 package teamdroid.com.speedtestarena.graphics;
 
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -48,6 +49,7 @@ public class Texture {
         }
 
         p.setAlpha(alpha);
+        p.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
     }
 
     // Setters
@@ -61,28 +63,28 @@ public class Texture {
         translateX = x;
         translateY = y;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
     public void setTranslationCenter(float x, float y) {
         translateX = x - width / 2;
         translateY = y - height / 2;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
     public void setTranslationCenterScale(float x, float y) {
         translateX = x - width * scaleX / 2;
         translateY = y - height * scaleY / 2;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
     public void setScale(float x, float y) {
         scaleX = x;
         scaleY = y;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
     public void setScaleCenter(float x, float y) {
@@ -93,7 +95,7 @@ public class Texture {
         scaleX = x;
         scaleY = y;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
     public void setRotation(float degrees, float x, float y) {
@@ -101,10 +103,10 @@ public class Texture {
         rotationX = x;
         rotationY = y;
 
-        recomputeCoordinateMatrix();
+        //recomputeCoordinateMatrix();
     }
 
-    private void recomputeCoordinateMatrix() {
+    public void recomputeCoordinateMatrix() {
         coordinateMatrix.reset();
         coordinateMatrix.postRotate(angleDegrees, rotationX, rotationY);
         coordinateMatrix.postScale(scaleX, scaleY);
@@ -120,12 +122,6 @@ public class Texture {
     public Matrix getMatrix() {
         return coordinateMatrix;
     }
-
-    /*
-    public Bitmap getBitmap() {
-        return loader.getTexture(textureID);
-    }
-    */
 
     public int getID() {
         return textureID;

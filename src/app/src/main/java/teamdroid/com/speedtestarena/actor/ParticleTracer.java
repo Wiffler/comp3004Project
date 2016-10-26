@@ -45,6 +45,7 @@ public class ParticleTracer {
         if (MathUtil.distanceSquare(prevPoint.getX(), prevPoint.getY(), px, py) > 25) {
             prevPoint.set(px, py);
             tex.setTranslationCenter(px, py);
+            tex.recomputeCoordinateMatrix();
             // spawn particle
             t.particleList.add(new Particle(px, py));
         }
@@ -54,6 +55,7 @@ public class ParticleTracer {
         this.active = true;
         prevPoint.set(px, py);
         tex.setTranslationCenter(px, py);
+        tex.recomputeCoordinateMatrix();
     }
 
     public void reset() {

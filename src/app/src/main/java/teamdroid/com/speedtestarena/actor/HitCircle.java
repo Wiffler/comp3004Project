@@ -20,14 +20,15 @@ public class HitCircle {
 
     private long startTime = 0;
     private long deathTime = 0;
+    private long beatTime = 0;
 
-    public HitCircle(int imageID, float x, float y, float r, long startTime, long deathTime) {
+    public HitCircle(int imageID, float x, float y, long startTime, long deathTime, long beatTime) {
         centerx = x;
         centery = y;
-        //radius = r;
 
         this.startTime = startTime;
         this.deathTime = deathTime;
+        this.beatTime = beatTime;
 
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
@@ -41,12 +42,13 @@ public class HitCircle {
         tex = new Texture(imageID, x, y, 255, colorMatrix);
         tex.setScale(0.28f, 0.28f);
         tex.setTranslationCenterScale(x, y);
+        tex.recomputeCoordinateMatrix();
 
         radius = tex.getWidth() / 2; // assuming square bitmap
 
         // Create the overlay object
-        float contract = (float) ((1f - 0.28f) / (deathTime - startTime));
-        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, 15, contract, startTime);
+        //float contract = (float) ((1f - 0.28f) / (deathTime - startTime));
+        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, startTime, beatTime);
     }
 
     // Setters
@@ -54,6 +56,7 @@ public class HitCircle {
         centerx = px;
         centery = py;
         tex.setTranslationCenter(px, py);
+        tex.recomputeCoordinateMatrix();
     }
 
     // Getters
@@ -65,6 +68,10 @@ public class HitCircle {
         return this.centery;
     }
 
+    public long getBeatTime() {
+        return beatTime;
+    }
+
     public float getR() {
         return this.radius;
     }
@@ -73,7 +80,7 @@ public class HitCircle {
         return this.tex;
     }
 
-    public HitCircleOverlay getOverlay() {return this.overlay;}
+    public HitCircleOverlay getOverlay() { return this.overlay; }
 
     public boolean inCircle(float px, float py) {
         if (MathUtil.distanceSquare(centerx, centery, px, py) <= radius * radius) {
@@ -82,24 +89,6 @@ public class HitCircle {
             return false;
         }
     }
-
-    /*
-    public void update(long curTime, float x, float y) {
-        if (curTime - prevTime > 2000) {
-            centerx = x;
-            centery = y;
-            tex.setTranslationCenterScale(x, y);
-            overlay.reset(x, y);
-
-            //System.out.println("HitCircle   tX: " + tex.getX() + " tY: " + tex.getY());
-            //System.out.println("Overlay     tX: " + overlay.getT().getX() + " tY: " + overlay.getT().getY());
-
-            prevTime = curTime;
-        } else {
-            overlay.update();
-        }
-    }
-    */
 
     public boolean update(long songPos) {
         if (songPos < deathTime) {

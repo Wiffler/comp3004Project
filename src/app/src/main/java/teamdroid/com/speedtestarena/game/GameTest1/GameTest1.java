@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
+import teamdroid.com.speedtestarena.io.GameTest1Event;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -20,7 +21,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public Renderer render;
     public BitmapLoader textures;
-    public EventQueue events;
+    public EventQueue<GameTest1Event> events;
 
     private GameTest1MainThread gameThread;
     public static Context activity;
@@ -37,7 +38,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         // Create the objects
         render = new Renderer();
         textures = new BitmapLoader();
-        events = new EventQueue();
+        events = new EventQueue<GameTest1Event>();
 
         // Create the game thread
         gameThread = new GameTest1MainThread(getHolder(), this);
@@ -88,7 +89,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (ready) {
-            events.enqueue(event);
+            events.enqueue(new GameTest1Event(event, gameThread.song.getPosition()));
         }
         return true;
     }
@@ -98,14 +99,18 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         //render.render(canvas, gameThread.curve);
 
         // Draw the hitcircles
+        gameThread.hitCircleMutex.lock();
         for (int i = 0; i < gameThread.hitcircleList.size(); i++) {
             render.render(canvas, gameThread.hitcircleList.get(i));
         }
+        gameThread.hitCircleMutex.unlock();
 
         // Draw the particles
+        gameThread.particleMutex.lock();
         for (int i = 0; i < gameThread.particleList.size(); i++) {
             render.render(canvas, gameThread.particleList.get(i));
         }
+        gameThread.particleMutex.unlock();
 
         // Draw the cursor
         render.render(canvas, gameThread.trace);
