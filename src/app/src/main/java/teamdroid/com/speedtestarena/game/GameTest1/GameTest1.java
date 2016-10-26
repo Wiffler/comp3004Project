@@ -2,6 +2,7 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,6 +20,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public volatile boolean ready = false;
 
+    public Handler delayHandler;
     public Renderer render;
     public BitmapLoader textures;
     public EventQueue<GameTest1Event> events;

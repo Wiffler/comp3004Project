@@ -6,7 +6,6 @@ import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,6 +16,7 @@ import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.graphics.Texture;
 import teamdroid.com.speedtestarena.io.GameTest1Event;
+import teamdroid.com.speedtestarena.sound.AudioDelayThread;
 import teamdroid.com.speedtestarena.sound.GameAudio;
 import teamdroid.com.speedtestarena.utility.GameTimer;
 
@@ -29,16 +29,22 @@ import static java.lang.StrictMath.min;
  */
 
 public class GameTest1MainThread extends Thread {
-    // flag to hold game state
-    private volatile boolean running = false;
-    private Random r = new Random();
+    // Locks
+    public final Lock hitCircleMutex = new ReentrantLock(true);
+    public final Lock particleMutex = new ReentrantLock(true);
 
+    // Flag to hold the game state
+    private volatile boolean running = false;
+
+    // Score
+    public int score = 0; // might create a player actor instead
+
+    // UI, Audio and Timer
     private SurfaceHolder surfaceHolder;
     private GameTest1 gamePanel;
     public GameAudio song;
-    private GameTimer timer;
-
-    public int score = 0;
+    public GameTimer timer;
+    public AudioDelayThread audioDelayThread;
 
     // Actors
     public Text scoreText;
@@ -50,10 +56,6 @@ public class GameTest1MainThread extends Thread {
     // Lists to hold actors
     public ArrayList<Particle> particleList;
     public volatile ArrayList<HitCircle> hitcircleList;
-
-    // Locks
-    public final Lock hitCircleMutex = new ReentrantLock(true);
-    public final Lock particleMutex = new ReentrantLock(true);
 
     // Constructor(s)
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel) {
@@ -81,7 +83,8 @@ public class GameTest1MainThread extends Thread {
                                     gamePanel.getWidth(), gamePanel.getHeight(), true);
 
         // Create the objects
-        song = new GameAudio();
+        audioDelayThread = new AudioDelayThread();
+        song = new GameAudio(timer);
         song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
 
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
@@ -232,12 +235,22 @@ public class GameTest1MainThread extends Thread {
         gamePanel.ready = true;
 
         // Start the audio
+        audioDelayThread.start();
+        /*
         try {
-            sleep(3000);
+            sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        song.startAudio();
+        */
+        while (!audioDelayThread.ready) {
+            try {
+                sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        song.startAudio(5000, audioDelayThread.delayHandler);
 
         while (this.running) {
             while (timer.getTicks() == 0) {

@@ -115,7 +115,8 @@ public class HitMap {
         long startDelay = -1000;
         long endDelay = 100;
 
-        // test
+        // offset needs sign switched
+        // ex. offset = -0.567 means start at 567ms point on the audio file
         offset = -1 * offset;
 
         System.out.println("Beat count: " + spawnMap.size());

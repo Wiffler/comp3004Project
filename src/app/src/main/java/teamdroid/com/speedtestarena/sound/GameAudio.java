@@ -2,19 +2,32 @@ package teamdroid.com.speedtestarena.sound;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
+import android.os.Handler;
 
-import teamdroid.com.speedtestarena.R;
+import teamdroid.com.speedtestarena.utility.GameTimer;
+
+import static java.lang.Math.min;
 
 /**
  * Created by Kenny on 2016-10-21.
  */
 
 public class GameAudio {
-    MediaPlayer mp = null;
+    private MediaPlayer mp = null;
+
+    // Manually implement start delay
+    private volatile boolean start = false;
+    private volatile long startTime = 0;
+    private long delay = 0;
+    private GameTimer g = null;
 
     public GameAudio() {
         super();
+    }
+
+    public GameAudio(GameTimer time) {
+        super();
+        g = time;
     }
 
     public void createAudio(Context activity, int resID) {
@@ -24,6 +37,23 @@ public class GameAudio {
     public void startAudio() {
         if (mp != null) {
             mp.start();
+        }
+    }
+
+    public void startAudio(long delay, Handler delayHandler) {
+        if (mp != null) {
+            this.delay = delay;
+            startTime = g.getTime();
+            start = true;
+
+            delayHandler.postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mp.start();
+                        }
+                    },
+                    delay);
         }
     }
 
@@ -41,7 +71,11 @@ public class GameAudio {
 
     public long getPosition() {
         if (mp != null) {
-            return mp.getCurrentPosition();
+            if (mp.getCurrentPosition() <= 0 && start) {
+                return min((g.getTime() - startTime) - delay, 0l);
+            } else {
+                return mp.getCurrentPosition();
+            }
         } else {
             return -2;
         }
@@ -57,6 +91,7 @@ public class GameAudio {
 
     public void cleanup() {
         if (mp != null) {
+            mp.reset();
             mp.release();
             mp = null;
         }
