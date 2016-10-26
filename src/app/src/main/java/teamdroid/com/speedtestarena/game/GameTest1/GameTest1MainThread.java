@@ -15,6 +15,7 @@ import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.actor.Text;
+import teamdroid.com.speedtestarena.graphics.Texture;
 import teamdroid.com.speedtestarena.io.GameTest1Event;
 import teamdroid.com.speedtestarena.sound.GameAudio;
 import teamdroid.com.speedtestarena.utility.GameTimer;
@@ -43,8 +44,8 @@ public class GameTest1MainThread extends Thread {
     public Text scoreText;
     public Text tickText;
     public ParticleTracer trace;
-
     public HitMap mapper;
+    public Texture bg;
 
     // Lists to hold actors
     public ArrayList<Particle> particleList;
@@ -76,6 +77,8 @@ public class GameTest1MainThread extends Thread {
         int[] idList = {R.drawable.cursor, R.drawable.cursortrail,
                         R.drawable.hitcircle, R.drawable.hitcircleoverlay};
         gamePanel.render.loadBitmaps(gamePanel.activity, idList);
+        gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.test_sound_file2_bg,
+                                    gamePanel.getWidth(), gamePanel.getHeight(), true);
 
         // Create the objects
         song = new GameAudio();
@@ -88,11 +91,16 @@ public class GameTest1MainThread extends Thread {
         particleList = new ArrayList<Particle>();
         hitcircleList = new ArrayList<HitCircle>();
         mapper = new HitMap();
+
+        bg = new Texture(R.drawable.test_sound_file2_bg, 0, 0, 255, null);
     }
 
     // Initialises the objects
     private void initialise() {
         // Setup the objects
+        bg.setTranslation(0, (gamePanel.getHeight() - bg.getHeight()) / 2);
+        bg.recomputeCoordinateMatrix();
+
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
 

@@ -102,13 +102,6 @@ public class HitMap {
         // Parse the sound map
         parser.readSM(context, R.raw.test_sound_file2_sm, this);
 
-        // print the measure map:
-        /*
-        for (int i = 0; i < measureMap.size(); i++) {
-            System.out.println("i: " + i + " measurecount: " + measureMap.get(i));
-        }
-        */
-
         // set the spawn times
         int vinterval = 0;
         int measureIndex = 0;

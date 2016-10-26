@@ -95,6 +95,8 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawGame(Canvas canvas) {
+        render.render(canvas, gameThread.bg);
+
         // Draw the curves *not implemented
         //render.render(canvas, gameThread.curve);
 

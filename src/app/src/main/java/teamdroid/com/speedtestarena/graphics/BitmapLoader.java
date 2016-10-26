@@ -23,6 +23,32 @@ public class BitmapLoader {
         return id;
     }
 
+    public int loadBitmap(Context context, int id, int dstWidth, int dstHeight, boolean adjustRatio) {
+        int targetWidth, targetHeight;
+
+        // Decode the bitmap
+        Bitmap b = BitmapFactory.decodeResource(context.getResources(), id);
+
+        if (adjustRatio) {
+            // Adjust the aspect ratio
+            float imageRatio = b.getWidth() / b.getHeight();
+
+            if (dstWidth > dstHeight) {
+                targetWidth = (int) (imageRatio * dstHeight);
+                targetHeight = dstHeight;
+            } else {
+                targetWidth = dstWidth;
+                targetHeight = (int) (imageRatio * (dstWidth / imageRatio));
+            }
+        } else {
+            targetWidth = dstWidth;
+            targetHeight = dstHeight;
+        }
+
+        bitmapTable.put(id, Bitmap.createScaledBitmap(b, targetWidth, targetHeight, true));
+        return id;
+    }
+
     public void loadBitmapList(Context context, int[] id) {
         for (int i = 0; i < id.length; i++) {
             bitmapTable.put(id[i], BitmapFactory.decodeResource(context.getResources(), id[i]));

@@ -29,6 +29,14 @@ public class Renderer {
         bitmaps.loadBitmapList(context, idList);
     }
 
+    public static void loadBitmap(Context context, int id) {
+        bitmaps.loadBitmap(context, id);
+    }
+
+    public static void loadBitmap(Context context, int id, int desW, int desH, boolean adjRatio) {
+        bitmaps.loadBitmap(context, id, desW, desH, adjRatio);
+    }
+
     public static float getBitmapHeight(int id) {
         return bitmaps.getBitmap(id).getHeight();
     }
