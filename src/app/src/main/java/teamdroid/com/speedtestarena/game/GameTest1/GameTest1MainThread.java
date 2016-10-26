@@ -165,7 +165,7 @@ public class GameTest1MainThread extends Thread {
 
                 mapper.spawnTimeIndex = mapper.spawnTimeIndex + 1;
 
-                System.out.println("SPAWN INDEX: " + mapper.spawnTimeIndex);
+                //System.out.println("SPAWN INDEX: " + mapper.spawnTimeIndex);
                 if (mapper.spawnTimeIndex < mapper.hitcircleSpawnTimes.size()) {
                     spTime = mapper.hitcircleSpawnTimes.get(mapper.spawnTimeIndex);
                 } else {

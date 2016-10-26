@@ -20,8 +20,6 @@ public class SMParser {
     // state = 4 : termination state
     private int parseState = 0;
 
-    private HitMap mapper = null;
-
     public SMParser() {
     }
 
@@ -29,6 +27,9 @@ public class SMParser {
         InputStream in = context.getResources().openRawResource(resID);
         //Read text from file
         StringBuilder text = new StringBuilder();
+
+        // Reset parse state
+        parseState = 0;
 
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -126,6 +127,7 @@ public class SMParser {
         }
         catch (IOException e) {
             //You'll need to add proper error handling here
+            System.out.println(e);
         }
     }
 }

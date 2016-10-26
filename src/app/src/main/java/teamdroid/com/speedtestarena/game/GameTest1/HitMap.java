@@ -3,10 +3,8 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.graphics.Particle;
 
 /**
  * Created by Kenny on 2016-10-25.
@@ -83,17 +81,21 @@ public class HitMap {
         return result;
     }
 
+    // Measure Map
     public void addMeasureMap(int code) {
         measureMap.add(code);
     }
 
-    public int readMeasureMap() {
+    public int readMeasureMap(int index) {
         // improve later
-        int result = measureMap.get(measureMapIndex);
-        measureMapIndex++;
-        return result;
+        return measureMap.get(index);
     }
 
+    public int measureMapSize() {
+        return measureMap.size();
+    }
+
+    // Initialization
     public void initialise(Context context) {
         // Parse the sound map
         parser.readSM(context, R.raw.test_sound_file2_sm, this);
