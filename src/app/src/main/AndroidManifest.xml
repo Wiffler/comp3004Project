@@ -29,8 +29,14 @@
                 android:value="teamdroid.com.speedtestarena.MainActivity" />
         </activity>
         <activity android:name=".game.CanvasTest.CanvasTestActivity" />
-        <activity android:name=".game.GameTest1.GameTest1Activity"></activity>
-        <activity android:name=".game.OpenGLESTest.OpenGLESTestActivity"></activity>
+        <activity
+            android:name=".game.GameTest1.GameTest1Activity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".game.OpenGLESTest.OpenGLESTestActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

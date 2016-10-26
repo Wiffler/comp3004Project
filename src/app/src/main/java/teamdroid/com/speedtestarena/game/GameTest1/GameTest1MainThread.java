@@ -6,11 +6,9 @@ import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.actor.ShadowedCurve;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Particle;
@@ -35,17 +33,16 @@ public class GameTest1MainThread extends Thread {
 
     // Actors
     public int score = 0;
-    //public HitCircle randCircle, randCircle2;
     //public ShadowedCurve curve;
     public Text scoreText;
     public Text tickText;
     public ParticleTracer trace;
 
+    public HitMap mapper;
+
     // Lists to hold actors
     public ArrayList<Particle> particleList;
     public ArrayList<HitCircle> hitcircleList;
-    public LinkedList<Long> hitcircleSpawnTimes;
-    public LinkedList<Long> hitcircleDeathTimes;
 
     // Constructor(s)
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel) {
@@ -72,10 +69,8 @@ public class GameTest1MainThread extends Thread {
 
         // Create the objects
         song = new GameAudio();
-        song.createAudio(gamePanel.activity, R.raw.test_sound_file1);
+        song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
 
-        //randCircle = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
-        //randCircle2 = new HitCircle(R.drawable.hitcircleoverlay, 0, 0, 50);
         //curve  = new ShadowedCurve(0, 0, 0, 0, 0, 0, 0, 0);
         scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
@@ -83,8 +78,7 @@ public class GameTest1MainThread extends Thread {
 
         particleList = new ArrayList<Particle>();
         hitcircleList = new ArrayList<HitCircle>();
-        hitcircleSpawnTimes = new LinkedList<Long>();
-        hitcircleDeathTimes = new LinkedList<Long>();
+        mapper = new HitMap();
     }
 
     // Initialises the objects
@@ -93,27 +87,7 @@ public class GameTest1MainThread extends Thread {
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
 
-        hitcircleSpawnTimes.add(1000l);
-        hitcircleSpawnTimes.add(2000l);
-        hitcircleSpawnTimes.add(3000l);
-        hitcircleSpawnTimes.add(4000l);
-        hitcircleSpawnTimes.add(5000l);
-        hitcircleSpawnTimes.add(6000l);
-        hitcircleSpawnTimes.add(7000l);
-        hitcircleSpawnTimes.add(8000l);
-        hitcircleSpawnTimes.add(9000l);
-        hitcircleSpawnTimes.add(10000l);
-
-        hitcircleDeathTimes.add(2000l);
-        hitcircleDeathTimes.add(3000l);
-        hitcircleDeathTimes.add(4000l);
-        hitcircleDeathTimes.add(5000l);
-        hitcircleDeathTimes.add(6000l);
-        hitcircleDeathTimes.add(7000l);
-        hitcircleDeathTimes.add(8000l);
-        hitcircleDeathTimes.add(9000l);
-        hitcircleDeathTimes.add(10000l);
-        hitcircleDeathTimes.add(11000l);
+        mapper.initialise(gamePanel.activity);
     }
 
     // Cleanup threads and resources when game ends
@@ -140,19 +114,6 @@ public class GameTest1MainThread extends Thread {
                     } else {
                         System.out.println("Coords: x=" + event.getX() + ", y=" + event.getY());
 
-                        /*
-                        if (randCircle.inCircle(event.getX(), event.getY())) {
-                            score += 1;
-                        }
-                        */
-                        /*
-                        for (int i = 0; i < hitcircleList.size(); i++) {
-                            if (hitcircleList.get(i).inCircle(event.getX(), event.getY())) {
-                                score += 1;
-                            }
-                        }
-                        */
-
                         // Update the hitcircles
                         for (Iterator<HitCircle> iterator = hitcircleList.iterator(); iterator.hasNext(); ) {
                             HitCircle h = iterator.next();
@@ -174,32 +135,6 @@ public class GameTest1MainThread extends Thread {
                     trace.reset();
                     break;
             }
-            /*
-            if (action == MotionEvent.ACTION_DOWN) {
-                //System.out.println("ACTION_DOWN");
-                if (event.getY() > gamePanel.getHeight() - 50) {
-                    this.setRunning(false);
-                    ((Activity) gamePanel.getContext()).finish();
-
-                } else {
-                    System.out.println("Coords: x=" + event.getX() + ", y=" + event.getY());
-
-                    if (randCircle.inCircle(event.getX(), event.getY())) {
-                        score += 1;
-                    }
-
-                    trace.set(event.getX(), event.getY());
-                }
-
-            } else if (action == MotionEvent.ACTION_MOVE) {
-                //System.out.println("ACTION_MOVE");
-                trace.eventUpdate(event.getX(), event.getY());
-
-            } else if (action == MotionEvent.ACTION_UP) {
-                //System.out.println("ACTION_UP");
-                trace.reset();
-            }
-            */
         }
     }
 
@@ -214,32 +149,30 @@ public class GameTest1MainThread extends Thread {
         }
 
         // Spawn the hitcircles
-        long spTime;
-        if (hitcircleSpawnTimes.size() > 0) {
-            spTime = hitcircleSpawnTimes.getFirst();
+        long spTime = 0;
+        if (mapper.spawnTimeIndex < mapper.hitcircleSpawnTimes.size()) {
+            spTime = mapper.hitcircleSpawnTimes.get(mapper.spawnTimeIndex);
             while (spTime <= song.getPosition()) {
+                //System.out.println("SPTIME: " + spTime + " SONG POSITION: " + song.getPosition() + " SPAWN INDEX: " + mapper.spawnTimeIndex + " Size: " + mapper.hitcircleSpawnTimes.size());
+
+                // Create new hit circle
                 hitcircleList.add(new HitCircle(R.drawable.hitcircleoverlay,
-                                                r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
-                                                r.nextInt((gamePanel.getHeight() - 100) - 100) + 100,
-                                                50,
-                                                hitcircleSpawnTimes.removeFirst(),
-                                                hitcircleDeathTimes.removeFirst()));
-                if (hitcircleSpawnTimes.size() > 0) {
-                    spTime = hitcircleSpawnTimes.getFirst();
+                        mapper.spawnLocX[mapper.hitcircleLocation.get(mapper.spawnTimeIndex)],
+                        mapper.spawnLocY[mapper.hitcircleLocation.get(mapper.spawnTimeIndex)],
+                        50,
+                        mapper.hitcircleSpawnTimes.get(mapper.spawnTimeIndex),
+                        mapper.hitcircleDeathTimes.get(mapper.spawnTimeIndex)));
+
+                mapper.spawnTimeIndex = mapper.spawnTimeIndex + 1;
+
+                System.out.println("SPAWN INDEX: " + mapper.spawnTimeIndex);
+                if (mapper.spawnTimeIndex < mapper.hitcircleSpawnTimes.size()) {
+                    spTime = mapper.hitcircleSpawnTimes.get(mapper.spawnTimeIndex);
                 } else {
-                    break;
+                    spTime = song.getDuration() + 1;
                 }
             }
         }
-
-        /*
-        randCircle.update(curTime,
-                r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
-                r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
-        randCircle2.update(curTime,
-                r.nextInt((gamePanel.getWidth() - 100) - 100) + 100,
-                r.nextInt((gamePanel.getHeight() - 100) - 100) + 100);
-         */
 
         // Update the connecting curves
         //curve.setStartPoint(randCircle.getX(), randCircle.getY());
@@ -280,6 +213,11 @@ public class GameTest1MainThread extends Thread {
         gamePanel.ready = true;
 
         // Start the audio
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         song.startAudio();
 
         while (this.running) {
