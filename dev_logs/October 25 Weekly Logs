@@ -1,0 +1,7 @@
+(1) Cleaned up loading code.
+(2) Added support for drawing bitmaps with matrix operations.
+(3) Improved GameTest1 by implementing a basic game. Still needs work on the event handling and object management.
+(4) Added an .sm parser for GameTest1
+(5) Added a test activity for OpenGL ES -> 99% not needed in the future
+    Android graphics library doesn't support 2D blur filter or shadow operation for paint on the hardware accelerated pipeline.
+(6) Improved audio and game time syncing. Still needs more testing though.
