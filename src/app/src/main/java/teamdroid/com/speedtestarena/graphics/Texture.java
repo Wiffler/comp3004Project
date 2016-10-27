@@ -52,6 +52,37 @@ public class Texture {
         p.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
     }
 
+    public Texture(int id, float px, float py, int w, int h, int alpha, ColorMatrix colorMatrix) {
+        // Setup the texture
+        textureID = id;
+        width = w;
+        height = h;
+
+        // Setup the coordinate matrix
+        scaleX = 1f;
+        scaleY = 1f;
+        translateX = 0f;
+        translateY = 0f;
+        angleDegrees = 0f;
+        rotationX = 0f;
+        rotationY = 0f;
+        coordinateMatrix = new Matrix();
+        coordinateMatrix.postRotate(angleDegrees, rotationX, rotationY);
+        coordinateMatrix.postScale(scaleX, scaleY);
+        coordinateMatrix.postTranslate(translateX, translateY);
+
+        // Setup the color matrix and Paint object
+        this.p = new Paint();
+
+        if (colorMatrix != null) {
+            this.colorMatrix = colorMatrix;
+            p.setColorFilter(new ColorMatrixColorFilter(this.colorMatrix));
+        }
+
+        p.setAlpha(alpha);
+        p.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
+    }
+
     // Setters
     public void setAlpha(int alpha) {
         if (p.getAlpha() > 0) {

@@ -2,6 +2,7 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -32,11 +33,14 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         activity = context;
         getHolder().addCallback(this);
-        setFocusable(true);
+        //setFocusable(true);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        // Set the background color
+        setBackgroundColor(Color.BLACK);
+
         // Create the objects
         render = new Renderer();
         textures = new BitmapLoader();
@@ -68,9 +72,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        canvas.drawRGB(0, 0, 0);
+        //super.onDraw(canvas);
 
         if (ready) {
             drawGame(canvas);
@@ -97,11 +99,6 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawGame(Canvas canvas) {
-        render.render(canvas, gameThread.bg);
-
-        // Draw the curves *not implemented
-        //render.render(canvas, gameThread.curve);
-
         // Draw the hitcircles
         gameThread.hitCircleMutex.lock();
         for (int i = 0; i < gameThread.hitcircleList.size(); i++) {

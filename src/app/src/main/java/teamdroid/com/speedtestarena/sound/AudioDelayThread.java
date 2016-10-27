@@ -2,10 +2,11 @@ package teamdroid.com.speedtestarena.sound;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 
 /**
  * Created by Kenny on 2016-10-26.
+ * Thread dies when the parent thread terminates.
+ * Stays alive in the background until the main game thread dies.
  */
 
 public class AudioDelayThread extends Thread {
@@ -21,18 +22,6 @@ public class AudioDelayThread extends Thread {
 
         delayHandler = new Handler();
         ready = true;
-        /*
-        delayHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                // process incoming messages here
-                switch (msg.arg1) {
-                    case 0:
-
-                        break;
-                }
-            }
-        };
-        */
 
         Looper.loop();
     }

@@ -1,6 +1,7 @@
 package teamdroid.com.speedtestarena.game.GameTest1;
 
 import android.app.Activity;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
+import teamdroid.com.speedtestarena.graphics.Background;
 import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.graphics.Texture;
@@ -36,6 +38,9 @@ public class GameTest1MainThread extends Thread {
     // Flag to hold the game state
     private volatile boolean running = false;
 
+    // Track if redraw is needed
+    private volatile boolean dirty = false;
+
     // Score
     public int score = 0; // might create a player actor instead
 
@@ -51,7 +56,7 @@ public class GameTest1MainThread extends Thread {
     public Text tickText;
     public ParticleTracer trace;
     public HitMap mapper;
-    public Texture bg;
+    public Background bg;
 
     // Lists to hold actors
     public ArrayList<Particle> particleList;
@@ -87,27 +92,35 @@ public class GameTest1MainThread extends Thread {
         song = new GameAudio(timer);
         song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
 
-        scoreText = new Text(0, 0, "Score: " + score, "#FFFFFF");
+        scoreText = new Text(0, 0, "Score: 0", "#FFFFFF");
         tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
-        trace = new ParticleTracer(gamePanel.textures, this);
+        trace = new ParticleTracer(this);
 
         particleList = new ArrayList<Particle>();
         hitcircleList = new ArrayList<HitCircle>();
         mapper = new HitMap();
 
-        bg = new Texture(R.drawable.test_sound_file2_bg, 0, 0, 255, null);
+        // Set the background drawable
+        bg = new Background(gamePanel.activity, R.drawable.test_sound_file2_bg, gamePanel.getWidth(), gamePanel.getHeight());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            gamePanel.setBackground(bg);
+        } else {
+            gamePanel.setBackgroundDrawable(bg);
+        }
     }
 
     // Initialises the objects
     private void initialise() {
         // Setup the objects
-        bg.setTranslation(0, (gamePanel.getHeight() - bg.getHeight()) / 2);
-        bg.recomputeCoordinateMatrix();
+        //bg.setTranslation(0, (gamePanel.getHeight() - bg.getHeight()) / 2);
+        //bg.recomputeCoordinateMatrix();
 
         scoreText.setPosition(50, 50);
         tickText.setPosition(50, 100);
 
         mapper.initialise(gamePanel.activity);
+
+        dirty = true;
     }
 
     // Cleanup threads and resources when game ends
@@ -140,21 +153,26 @@ public class GameTest1MainThread extends Thread {
                             HitCircle h = iterator.next();
                             if (h.inCircle(e.getX(), e.getY())) {
                                 score += (int) (100f * min(1 - (((float) abs(gameEvent.songTime - h.getBeatTime())) / 1000f), 1f));
+                                // Update the score text
+                                scoreText.setText("Score: " + score);
                                 iterator.remove();
                             }
                         }
                         hitCircleMutex.unlock();
 
                         trace.set(e.getX(), e.getY());
+                        dirty = true;
                     }
                     break;
 
                 case MotionEvent.ACTION_MOVE:
                     trace.eventUpdate(e.getX(), e.getY());
+                    dirty = true;
                     break;
 
                 case MotionEvent.ACTION_UP:
                     trace.reset();
+                    dirty = true;
                     break;
             }
         }
@@ -169,6 +187,7 @@ public class GameTest1MainThread extends Thread {
             if (!h.update(song.getPosition())) {
                 iterator.remove();
             }
+            dirty = true;
         }
 
         // Spawn the hitcircles
@@ -188,6 +207,7 @@ public class GameTest1MainThread extends Thread {
                         info.spawnTime,
                         info.deathTime,
                         info.beatTime));
+                dirty = true;
 
                 mapper.spawnTimeIndex = mapper.spawnTimeIndex + 1;
 
@@ -201,9 +221,6 @@ public class GameTest1MainThread extends Thread {
         }
         hitCircleMutex.unlock();
 
-        // Update the score text
-        scoreText.setText("Score: " + score);
-
         // Update the particle list
         particleMutex.lock();
         for (Iterator<Particle> iterator = particleList.iterator(); iterator.hasNext(); ) {
@@ -212,6 +229,7 @@ public class GameTest1MainThread extends Thread {
                 iterator.remove();
             } else {
                 p.update();
+                dirty = true;
             }
         }
         particleMutex.unlock();
@@ -236,13 +254,6 @@ public class GameTest1MainThread extends Thread {
 
         // Start the audio
         audioDelayThread.start();
-        /*
-        try {
-            sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        */
         while (!audioDelayThread.ready) {
             try {
                 sleep(1);
@@ -288,8 +299,11 @@ public class GameTest1MainThread extends Thread {
             }
 
             // draw a frame
-            gamePanel.postInvalidate();
-            frames_done++;
+            if (dirty) {
+                gamePanel.postInvalidate();
+                frames_done++;
+                dirty = false;
+            }
         }
 
         // Cleanup resources

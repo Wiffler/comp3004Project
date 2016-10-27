@@ -19,13 +19,13 @@ public class ParticleTracer {
     private Texture tex;
     private GameTest1MainThread t;
 
-    public ParticleTracer(BitmapLoader loader) {
+    public ParticleTracer() {
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
         tex = new Texture(R.drawable.cursor, 0, 0, 255, null);
     }
 
-    public ParticleTracer(BitmapLoader loader, GameTest1MainThread thread) {
+    public ParticleTracer(GameTest1MainThread thread) {
         this.active = false;
         prevPoint = new Vector2f(-1f, -1f);
         tex = new Texture(R.drawable.cursor, 0, 0, 255, null);

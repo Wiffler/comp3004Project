@@ -24,7 +24,7 @@ public class Text {
 
         p = new Paint();
         p.setColor(Color.parseColor(c));
-        setTextSizeForWidth(p, 100f, 100f, text);
+        setTextSizeForWidth(p, 100f, 50f, text);
     }
 
     // Setters
