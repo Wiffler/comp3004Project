@@ -1,7 +1,8 @@
 package teamdroid.com.speedtestarena.graphics;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.math.Vector2f;
+
+import static java.lang.Math.max;
 
 /**
  * Created by Kenny on 2016-10-20.
@@ -9,27 +10,36 @@ import teamdroid.com.speedtestarena.math.Vector2f;
 
 public class Particle {
 
+    public volatile boolean active;
     private int decayRate;
     private Texture tex;
-    private Vector2f pos;
 
     public Particle(float px, float py) {
-        decayRate = 5;
-        pos = new Vector2f(px, py);
+        decayRate = -10;
         tex = new Texture(R.drawable.cursortrail, 0, 0, 255, null);
+        tex.setTranslationCenter(px, py);
+        tex.recomputeCoordinateMatrix();
+        active = false;
+    }
+
+    public void activate(float px, float py) {
+        active = true;
+        tex.setAlpha(255);
         tex.setTranslationCenter(px, py);
         tex.recomputeCoordinateMatrix();
     }
 
-    public Texture getTex() {
+    public boolean update() {
+        if (tex.getAlpha() <= 0) {
+            active = false;
+        } else {
+            tex.setAlpha(max(tex.getAlpha() + decayRate, 0));
+        }
+
+        return active;
+    }
+
+    public Texture getTexture() {
         return tex;
-    }
-
-    public int getAlpha() {
-        return tex.getAlpha();
-    }
-
-    public void update() {
-        tex.setAlpha(-1 * decayRate);
     }
 }

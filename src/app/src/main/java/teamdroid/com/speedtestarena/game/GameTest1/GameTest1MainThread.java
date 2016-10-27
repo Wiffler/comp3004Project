@@ -6,7 +6,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,9 +13,8 @@ import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Background;
-import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.actor.Text;
-import teamdroid.com.speedtestarena.graphics.Texture;
+import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.io.GameTest1Event;
 import teamdroid.com.speedtestarena.sound.AudioDelayThread;
 import teamdroid.com.speedtestarena.sound.GameAudio;
@@ -31,9 +29,11 @@ import static java.lang.StrictMath.min;
  */
 
 public class GameTest1MainThread extends Thread {
+    // Constants
+    private static int HITCIRCLE_MAX = 64;
+
     // Locks
-    public final Lock hitCircleMutex = new ReentrantLock(true);
-    public final Lock particleMutex = new ReentrantLock(true);
+    public final Lock updateLock = new ReentrantLock(true);
 
     // Flag to hold the game state
     private volatile boolean running = false;
@@ -41,8 +41,11 @@ public class GameTest1MainThread extends Thread {
     // Track if redraw is needed
     private volatile boolean dirty = false;
 
+    // FPS
+    public volatile int fps = 0;
+
     // Score
-    public int score = 0; // might create a player actor instead
+    public volatile int score = 0; // might create a player actor instead
 
     // UI, Audio and Timer
     private SurfaceHolder surfaceHolder;
@@ -52,14 +55,13 @@ public class GameTest1MainThread extends Thread {
     public AudioDelayThread audioDelayThread;
 
     // Actors
-    public Text scoreText;
-    public Text tickText;
+    public Text scoreText, fpsText;
     public ParticleTracer trace;
     public HitMap mapper;
     public Background bg;
 
     // Lists to hold actors
-    public ArrayList<Particle> particleList;
+    //public ArrayList<Particle> particleList;
     public volatile ArrayList<HitCircle> hitcircleList;
 
     // Constructor(s)
@@ -78,27 +80,37 @@ public class GameTest1MainThread extends Thread {
     }
     public boolean isRunning() { return this.running; }
 
-    // Instantiates the objects
-    private void create() {
+    // Initialises the objects
+    private void initialise() {
         // Load the textures
-        int[] idList = {R.drawable.cursor, R.drawable.cursortrail,
-                        R.drawable.hitcircle, R.drawable.hitcircleoverlay};
+        int[] idList = {R.drawable.cursor, R.drawable.cursortrail};
         gamePanel.render.loadBitmaps(gamePanel.activity, idList);
+        gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.hitcircle2,
+                                    100, 100, false);
+        gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.hitcircleoverlay,
+                                    200, 200, false);
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.test_sound_file2_bg,
                                     gamePanel.getWidth(), gamePanel.getHeight(), true);
 
-        // Create the objects
+        // Setup the audio
         audioDelayThread = new AudioDelayThread();
         song = new GameAudio(timer);
         song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
 
-        scoreText = new Text(0, 0, "Score: 0", "#FFFFFF");
-        tickText = new Text(0, 0, "Interval: ", "#FFFFFF");
-        trace = new ParticleTracer(this);
+        // Setup the cursor and text
+        scoreText = new Text(50, 50, "Score:", "#FFFFFF");
+        fpsText = new Text(50, 100, "", "#FFFFFF");
+        trace = new ParticleTracer();
 
-        particleList = new ArrayList<Particle>();
-        hitcircleList = new ArrayList<HitCircle>();
-        mapper = new HitMap();
+        // Setup the hitcircle objects
+        hitcircleList = new ArrayList<HitCircle>(HITCIRCLE_MAX);
+        for (int i = 0; i < HITCIRCLE_MAX; i++) {
+            hitcircleList.add(new HitCircle(R.drawable.hitcircle2, 0, 0, 0, 0, 0));
+        }
+
+        // Setup the song mapping
+        mapper = new HitMap(gamePanel.getWidth(), gamePanel.getHeight(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
+        mapper.initialise(gamePanel.activity);
 
         // Set the background drawable
         bg = new Background(gamePanel.activity, R.drawable.test_sound_file2_bg, gamePanel.getWidth(), gamePanel.getHeight());
@@ -107,19 +119,8 @@ public class GameTest1MainThread extends Thread {
         } else {
             gamePanel.setBackgroundDrawable(bg);
         }
-    }
 
-    // Initialises the objects
-    private void initialise() {
-        // Setup the objects
-        //bg.setTranslation(0, (gamePanel.getHeight() - bg.getHeight()) / 2);
-        //bg.recomputeCoordinateMatrix();
-
-        scoreText.setPosition(50, 50);
-        tickText.setPosition(50, 100);
-
-        mapper.initialise(gamePanel.activity);
-
+        // Set redraw flag
         dirty = true;
     }
 
@@ -145,20 +146,20 @@ public class GameTest1MainThread extends Thread {
                         ((Activity) gamePanel.getContext()).finish();
 
                     } else {
-                        System.out.println("Coords: x=" + e.getX() + ", y=" + e.getY());
+                        //System.out.println("Coords: x=" + e.getX() + ", y=" + e.getY());
 
                         // Update the hitcircles
-                        hitCircleMutex.lock();
-                        for (Iterator<HitCircle> iterator = hitcircleList.iterator(); iterator.hasNext(); ) {
-                            HitCircle h = iterator.next();
-                            if (h.inCircle(e.getX(), e.getY())) {
-                                score += (int) (100f * min(1 - (((float) abs(gameEvent.songTime - h.getBeatTime())) / 1000f), 1f));
-                                // Update the score text
-                                scoreText.setText("Score: " + score);
-                                iterator.remove();
+                        HitCircle h;
+                        for (int i = 0; i < hitcircleList.size(); i++) {
+                            h = hitcircleList.get(i);
+                            if (h.active) {
+                                if (h.inCircle(e.getX(), e.getY())) {
+                                    score += (int) (100f * min(1 - (((float) abs(gameEvent.songTime - h.getBeatTime())) / 1000f), 1f));
+                                    scoreText.setText("Score: " + score);
+                                    h.active = false;
+                                }
                             }
                         }
-                        hitCircleMutex.unlock();
 
                         trace.set(e.getX(), e.getY());
                         dirty = true;
@@ -181,37 +182,40 @@ public class GameTest1MainThread extends Thread {
     // Updates the state of the objects every tick
     private void updateState(long curTime) {
         // Update the hitcircles
-        hitCircleMutex.lock();
-        for (Iterator<HitCircle> iterator = hitcircleList.iterator(); iterator.hasNext(); ) {
-            HitCircle h = iterator.next();
-            if (!h.update(song.getPosition())) {
-                iterator.remove();
+        HitCircle h;
+        for (int i = 0; i < hitcircleList.size(); i++) {
+            h = hitcircleList.get(i);
+            if (h.active) {
+                if (!h.update(song.getPosition())) {
+                    h.active = false;
+                }
+                dirty = true;
             }
-            dirty = true;
         }
+
 
         // Spawn the hitcircles
         HitInfo info = null;
         if (mapper.spawnTimeIndex < mapper.spawnInfoList.size()) {
             info = mapper.spawnInfoList.get(mapper.spawnTimeIndex);
 
-            //spTime = mapper.hitcircleSpawnTimes.get(mapper.spawnTimeIndex);
+            int index = 0;
             while ((info != null) && (info.spawnTime <= song.getPosition())) {
                 //System.out.println("SPTIME: " + spTime + " SONG POSITION: " + song.getPosition() + " SPAWN INDEX: " + mapper.spawnTimeIndex + " Size: " + mapper.hitcircleSpawnTimes.size());
 
-                // Create new hit circle
-                hitcircleList.add(new HitCircle(
-                        R.drawable.hitcircleoverlay,
-                        mapper.spawnLocX[info.spawnLocation],
-                        mapper.spawnLocY[info.spawnLocation],
-                        info.spawnTime,
-                        info.deathTime,
-                        info.beatTime));
-                dirty = true;
+                for (int i = index; i < hitcircleList.size(); i++) {
+                    h = hitcircleList.get(i);
+                    if (!h.active) {
+                        h.activate(mapper.spawnLoc[0][info.spawnLocation],
+                                   mapper.spawnLoc[1][info.spawnLocation],
+                                   info.spawnTime, info.deathTime, info.beatTime);
+                        index = i + 1;
+                        break;
+                    }
+                }
 
                 mapper.spawnTimeIndex = mapper.spawnTimeIndex + 1;
 
-                //System.out.println("SPAWN INDEX: " + mapper.spawnTimeIndex);
                 if (mapper.spawnTimeIndex < mapper.spawnInfoList.size()) {
                     info = mapper.spawnInfoList.get(mapper.spawnTimeIndex);
                 } else {
@@ -219,34 +223,21 @@ public class GameTest1MainThread extends Thread {
                 }
             }
         }
-        hitCircleMutex.unlock();
 
-        // Update the particle list
-        particleMutex.lock();
-        for (Iterator<Particle> iterator = particleList.iterator(); iterator.hasNext(); ) {
-            Particle p = iterator.next();
-            if (p.getAlpha() <= 0) {
-                iterator.remove();
-            } else {
-                p.update();
-                dirty = true;
-            }
-        }
-        particleMutex.unlock();
+        // Update the tracer particles
+        dirty = trace.update() || dirty;
     }
 
     @Override
     public void run() {
         long prevTime = 0;
         int frames_done = 0;
-        int fps = 0;
 
         // Start the timer
         timer.setRunning(true);
         timer.start();
 
         // create and initialise the objects
-        create();
         initialise();
 
         // Set the ready state for the UI
@@ -276,11 +267,11 @@ public class GameTest1MainThread extends Thread {
             while(timer.getTicks() > 0) {
                 long old_ticks = timer.getTicks();
 
-                // handle the IO events
+                // handle the IO events and game state updates
+                updateLock.lock();
                 handleIO();
-
-                // update game state
                 updateState(timer.getTime());
+                updateLock.unlock();
 
                 timer.decrementTicks();
                 if(old_ticks <= timer.getTicks()) {
@@ -290,8 +281,10 @@ public class GameTest1MainThread extends Thread {
 
             if (timer.getTime() - prevTime >= 1000) {
                 // fps now holds the the number of frames done in the last second
+                updateLock.lock();
                 fps = frames_done;
-                tickText.setText("FPS: " + fps);
+                fpsText.setText("FPS: " + fps);
+                updateLock.unlock();
 
                 // reset for the next second
                 frames_done = 0;

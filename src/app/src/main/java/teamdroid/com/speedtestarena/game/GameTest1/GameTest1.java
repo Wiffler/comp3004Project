@@ -72,8 +72,6 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //super.onDraw(canvas);
-
         if (ready) {
             drawGame(canvas);
         }
@@ -99,26 +97,22 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawGame(Canvas canvas) {
-        // Draw the hitcircles
-        gameThread.hitCircleMutex.lock();
-        for (int i = 0; i < gameThread.hitcircleList.size(); i++) {
-            render.render(canvas, gameThread.hitcircleList.get(i));
-        }
-        gameThread.hitCircleMutex.unlock();
+        gameThread.updateLock.lock();
 
-        // Draw the particles
-        gameThread.particleMutex.lock();
-        for (int i = 0; i < gameThread.particleList.size(); i++) {
-            render.render(canvas, gameThread.particleList.get(i));
+        // Draw the hitcircles
+        for (int i = 0; i < gameThread.hitcircleList.size(); i++) {
+            if (gameThread.hitcircleList.get(i).active) {
+                render.render(canvas, gameThread.hitcircleList.get(i));
+            }
         }
-        gameThread.particleMutex.unlock();
+
+        // Draw the game text
+        render.render(canvas, gameThread.fpsText);
+        render.render(canvas, gameThread.scoreText);
 
         // Draw the cursor
         render.render(canvas, gameThread.trace);
-
-        // Draw the game text
-        render.render(canvas, gameThread.tickText);
-        render.render(canvas, gameThread.scoreText);
+        gameThread.updateLock.unlock();
 
         ready = true;
     }

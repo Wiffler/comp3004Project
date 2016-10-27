@@ -66,6 +66,15 @@ public class Renderer {
         if (obj.isActive()) {
             render(canvas, obj.getTex());
         }
+
+        // Draw the particles
+        Particle p;
+        for (int i = 0; i < obj.particleList.size(); i++) {
+            p = obj.particleList.get(i);
+            if (p.active) {
+                render(canvas, p);
+            }
+        }
     }
 
     public static void render(Canvas canvas, Texture obj) {
@@ -73,11 +82,11 @@ public class Renderer {
     }
 
     public static void render(Canvas canvas, Particle obj) {
-        render(canvas, obj.getTex());
+        render(canvas, obj.getTexture());
     }
 
     public static void render(Canvas canvas, HitCircleOverlay obj) {
-        render(canvas, obj.getT());
+        render(canvas, obj.getTex());
     }
 
     public static void render(Canvas canvas, HitCircle obj) {

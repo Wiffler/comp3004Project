@@ -6,7 +6,7 @@ package teamdroid.com.speedtestarena.math;
 
 public class Vector2f {
 
-    private float x, y;
+    public float x, y;
 
     public Vector2f(float x, float y) {
         this.x = x;
@@ -14,8 +14,8 @@ public class Vector2f {
     }
 
     public Vector2f(Vector2f v) {
-        this.x = v.getX();
-        this.y = v.getY();
+        x = v.x;
+        y = v.y;
     }
 
     public void set(float x, float y) {
@@ -24,23 +24,15 @@ public class Vector2f {
     }
 
     public void set(Vector2f v) {
-        this.x = v.getX();
-        this.y = v.getY();
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
+        x = v.x;
+        y = v.y;
     }
 
     public static float dotProduct(Vector2f v1, Vector2f v2) {
-        return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+        return v1.x * v2.x + v1.y * v2.y;
     }
 
     public static float distanceSquare(Vector2f v1, Vector2f v2) {
-        return (v1.getX() - v2.getX()) * (v1.getX() - v2.getX()) + (v1.getY() - v2.getY()) * (v1.getY() - v2.getY());
+        return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
     }
 }

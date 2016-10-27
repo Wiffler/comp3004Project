@@ -17,50 +17,48 @@ public class HitMap {
     private double bpms = 0;
     private long offset = 0;
 
-    public float[] spawnLocX = {200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800,
-                                200, 400, 600, 800, 200, 400, 600, 800};
-    public float[] spawnLocY = {300, 300, 300, 300,
-                                400, 400, 400, 400,
-                                500, 500, 500, 500,
-                                600, 600, 600, 600,
-                                700, 700, 700, 700,
-                                800, 800, 800, 800,
-                                900, 900, 900, 900,
-                                1000, 1000, 1000, 1000,
-                                1100, 1100, 1100, 1100,
-                                1200, 1200, 1200, 1200,
-                                1300, 1300, 1300, 1300,
-                                1400, 1400, 1400, 1400,
-                                1500, 1500, 1500, 1500,
-                                1600, 1600, 1600, 1600,
-                                1700, 1700, 1700, 1700,
-                                1800, 1800, 1800, 1800};
-
+    // Only used during map generation
     private ArrayList<Integer> spawnMap;
-    public int spawnMapIndex = 0;
-
     private ArrayList<Integer> measureMap;
-    public volatile int measureMapIndex = 0;
 
-    //public ArrayList<Long> hitcircleSpawnTimes;
-    //public ArrayList<Long> hitcircleDeathTimes;
-    //public ArrayList<Integer> hitcircleLocation;
+    public float[][] spawnLoc = new float[2][64];
     public ArrayList<HitInfo> spawnInfoList;
     public volatile int spawnTimeIndex;
 
-    public HitMap() {
+    public HitMap(float screenWidth, float screenHeight, float objWidth) {
         spawnMap = new ArrayList<Integer>();
         measureMap = new ArrayList<Integer>();
-        //hitcircleSpawnTimes = new ArrayList<Long>();
-        //hitcircleDeathTimes = new ArrayList<Long>();
-        //hitcircleLocation = new ArrayList<Integer>();
         spawnInfoList = new ArrayList<HitInfo>();
+        generateLocationArray(screenWidth, screenHeight, objWidth);
+    }
+
+    private void generateLocationArray(float width, float height, float objWidth) {
+        float horizontalBorderSize = 100;
+        float horizontalGapSize = (width - (2 * horizontalBorderSize + 4 * objWidth)) / 3;
+
+        float verticalTopBorder = 175;
+        float verticalBottomBorder = 100;
+        float verticalGap = (height - (verticalTopBorder + verticalBottomBorder + 16 * objWidth)) / 15;
+
+        // Generate spawnLoc matrix
+        for (int i = 0; i < 16; i++) {
+            spawnLoc[0][4 * i] = horizontalBorderSize;
+            spawnLoc[0][4 * i + 1] = horizontalBorderSize + objWidth + horizontalGapSize;
+            spawnLoc[0][4 * i + 2] = horizontalBorderSize + 2 * (objWidth + horizontalGapSize);
+            spawnLoc[0][4 * i + 3] = horizontalBorderSize + 3 * (objWidth + horizontalGapSize);
+
+            spawnLoc[1][4 * i] = verticalTopBorder + (objWidth + verticalGap) * i;
+            spawnLoc[1][4 * i + 1] = verticalTopBorder + (objWidth + verticalGap) * i;
+            spawnLoc[1][4 * i + 2] = verticalTopBorder + (objWidth + verticalGap) * i;
+            spawnLoc[1][4 * i + 3] = verticalTopBorder + (objWidth + verticalGap) * i;
+
+            /*
+            System.out.println("x1: " + spawnLocX[i] + " x2: " + spawnLocX[i + 1] +
+                    " x3: " + spawnLocX[i + 2] + " x4: " + spawnLocX[i + 3]);
+            System.out.println("y1: " + spawnLocY[i] + " y2: " + spawnLocY[i + 1] +
+                    " y3: " + spawnLocY[i + 2] + " y4: " + spawnLocY[i + 3]);
+            */
+        }
     }
 
     // Setters
@@ -76,28 +74,11 @@ public class HitMap {
         spawnMap.add(code);
     }
 
-    public int readSpawnMap() {
-        // improve later
-        int result = spawnMap.get(spawnMapIndex);
-        spawnMapIndex++;
-        return result;
-    }
-
-    // Measure Map
     public void addMeasureMap(int code) {
         measureMap.add(code);
     }
 
-    public int readMeasureMap(int index) {
-        // improve later
-        return measureMap.get(index);
-    }
-
-    public int measureMapSize() {
-        return measureMap.size();
-    }
-
-    // Initialization
+    // Initialization and map generation
     public void initialise(Context context) {
         // Parse the sound map
         parser.readSM(context, R.raw.test_sound_file2_sm, this);

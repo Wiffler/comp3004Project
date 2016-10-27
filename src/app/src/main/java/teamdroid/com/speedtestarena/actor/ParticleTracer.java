@@ -1,5 +1,8 @@
 package teamdroid.com.speedtestarena.actor;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.game.GameTest1.GameTest1MainThread;
 import teamdroid.com.speedtestarena.graphics.Particle;
@@ -14,22 +17,25 @@ import teamdroid.com.speedtestarena.math.Vector2f;
 
 public class ParticleTracer {
 
-    public volatile boolean active;
+    private static int PARTICLE_COUNT = 32;
+
+    private volatile boolean active;
     private Vector2f prevPoint;
     private Texture tex;
-    private GameTest1MainThread t;
+
+    // Particles
+    public volatile ArrayList<Particle> particleList;
 
     public ParticleTracer() {
-        this.active = false;
-        prevPoint = new Vector2f(-1f, -1f);
+        active = false;
+        prevPoint = new Vector2f(0f, 0f);
         tex = new Texture(R.drawable.cursor, 0, 0, 255, null);
-    }
 
-    public ParticleTracer(GameTest1MainThread thread) {
-        this.active = false;
-        prevPoint = new Vector2f(-1f, -1f);
-        tex = new Texture(R.drawable.cursor, 0, 0, 255, null);
-        t = thread;
+        // Setup the particles
+        particleList = new ArrayList<Particle>(PARTICLE_COUNT);
+        for (int i = 0; i < PARTICLE_COUNT; i++) {
+            particleList.add(new Particle(0, 0));
+        }
     }
 
     public Texture getTex() {
@@ -42,23 +48,47 @@ public class ParticleTracer {
 
     // Updates
     public void eventUpdate(float px, float py) {
-        if (MathUtil.distanceSquare(prevPoint.getX(), prevPoint.getY(), px, py) > 25) {
+        if (MathUtil.distanceSquare(prevPoint.x, prevPoint.y, px, py) > 25) {
+            // Update the cursor location
             prevPoint.set(px, py);
             tex.setTranslationCenter(px, py);
             tex.recomputeCoordinateMatrix();
-            // spawn particle
-            t.particleList.add(new Particle(px, py));
+
+            // Activate a particle
+            Particle p;
+            for (int i = 0; i < particleList.size(); i++) {
+                p = particleList.get(i);
+                if (p.active == false) {
+                    p.activate(px, py);
+                    break;
+                }
+            }
         }
     }
 
+    public boolean update() {
+        boolean dirtyFlag = false;
+
+        // Update the particle list
+        Particle p;
+        for (int i = 0; i < particleList.size(); i++) {
+            p = particleList.get(i);
+            if (p.active) {
+                dirtyFlag = p.update() || dirtyFlag;
+            }
+        }
+
+        return dirtyFlag;
+    }
+
     public void set(float px, float py) {
-        this.active = true;
+        active = true;
         prevPoint.set(px, py);
         tex.setTranslationCenter(px, py);
         tex.recomputeCoordinateMatrix();
     }
 
     public void reset() {
-        this.active = false;
+        active = false;
     }
 }

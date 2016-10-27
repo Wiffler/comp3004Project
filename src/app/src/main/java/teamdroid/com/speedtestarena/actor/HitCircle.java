@@ -11,6 +11,8 @@ import teamdroid.com.speedtestarena.math.MathUtil;
  */
 
 public class HitCircle {
+    public volatile boolean active;
+
     private Texture tex;
     private HitCircleOverlay overlay;
 
@@ -23,13 +25,7 @@ public class HitCircle {
     private long beatTime = 0;
 
     public HitCircle(int imageID, float x, float y, long startTime, long deathTime, long beatTime) {
-        centerx = x;
-        centery = y;
-
-        this.startTime = startTime;
-        this.deathTime = deathTime;
-        this.beatTime = beatTime;
-
+        // Create the texture
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
                 0, 1f, 0, 0, 50,
@@ -40,23 +36,37 @@ public class HitCircle {
         colorMatrix.set(colorTransform);
 
         tex = new Texture(imageID, x, y, 255, colorMatrix);
-        tex.setScale(0.28f, 0.28f);
-        tex.setTranslationCenterScale(x, y);
+        tex.setTranslation(x, y);
         tex.recomputeCoordinateMatrix();
+
+        // Set the fields
+        centerx = x + tex.getWidth() / 2;
+        centery = y + tex.getHeight() / 2;
+
+        this.startTime = startTime;
+        this.deathTime = deathTime;
+        this.beatTime = beatTime;
 
         radius = tex.getWidth() / 2; // assuming square bitmap
 
         // Create the overlay object
-        //float contract = (float) ((1f - 0.28f) / (deathTime - startTime));
-        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, x, y, startTime, beatTime);
+        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, centerx, centery, startTime, beatTime);
+
+        active = false;
     }
 
     // Setters
     public void setCenter(float px, float py) {
-        centerx = px;
-        centery = py;
-        tex.setTranslationCenter(px, py);
+        centerx = px + tex.getWidth() / 2;
+        centery = py + tex.getHeight() / 2;
+        tex.setTranslation(px, py);
         tex.recomputeCoordinateMatrix();
+    }
+
+    public void setTime(long startTime, long deathTime, long beatTime) {
+        this.startTime = startTime;
+        this.deathTime = deathTime;
+        this.beatTime = beatTime;
     }
 
     // Getters
@@ -88,6 +98,17 @@ public class HitCircle {
         } else {
             return false;
         }
+    }
+
+    public void activate(float x, float y, long startTime, long deathTime, long beatTime) {
+        setCenter(x, y);
+        this.startTime = startTime;
+        this.deathTime = deathTime;
+        this.beatTime = beatTime;
+
+        overlay.reset(centerx, centery, startTime, beatTime);
+
+        active = true;
     }
 
     public boolean update(long songPos) {

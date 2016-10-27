@@ -85,56 +85,50 @@ public class Texture {
 
     // Setters
     public void setAlpha(int alpha) {
-        if (p.getAlpha() > 0) {
-            p.setAlpha(p.getAlpha() + alpha);
-        }
+        p.setAlpha(alpha);
     }
 
     public void setTranslation(float x, float y) {
         translateX = x;
         translateY = y;
-
-        //recomputeCoordinateMatrix();
     }
 
     public void setTranslationCenter(float x, float y) {
         translateX = x - width / 2;
         translateY = y - height / 2;
+    }
 
-        //recomputeCoordinateMatrix();
+    public void setTranslationCenter(float x, float y, float w, float h) {
+        translateX = x - w / 2;
+        translateY = y - h / 2;
     }
 
     public void setTranslationCenterScale(float x, float y) {
         translateX = x - width * scaleX / 2;
         translateY = y - height * scaleY / 2;
+    }
 
-        //recomputeCoordinateMatrix();
+    public void setTranslationCenterScale(float x, float y, float w, float h) {
+        translateX = x - w * scaleX / 2;
+        translateY = y - h * scaleY / 2;
     }
 
     public void setScale(float x, float y) {
         scaleX = x;
         scaleY = y;
-
-        //recomputeCoordinateMatrix();
     }
 
     public void setScaleCenter(float x, float y) {
-        //rotationX = (width * scaleX) / 2;
-        //rotationY = (height * scaleY) / 2;
         translateX = (translateX + (width * scaleX) / 2) - width * x / 2;
         translateY = (translateY + (height * scaleY) / 2) - height * y / 2;
         scaleX = x;
         scaleY = y;
-
-        //recomputeCoordinateMatrix();
     }
 
     public void setRotation(float degrees, float x, float y) {
         angleDegrees = degrees;
         rotationX = x;
         rotationY = y;
-
-        //recomputeCoordinateMatrix();
     }
 
     public void recomputeCoordinateMatrix() {

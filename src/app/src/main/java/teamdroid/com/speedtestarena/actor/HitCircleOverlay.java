@@ -1,36 +1,23 @@
 package teamdroid.com.speedtestarena.actor;
 
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
-import android.graphics.Paint;
 
 import teamdroid.com.speedtestarena.graphics.Texture;
-import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 
 /**
  * Created by Kenny on 2016-10-24.
  */
 
 public class HitCircleOverlay {
-    private static float START_SCALE = 1f;
-    private static float END_SCALE = 0.28f;
-
-    private float centerx;
-    private float centery;
-    private float scale = 1;
-    private Texture t;
+    private float endScale = 0f;
+    private float scale = 1f;
+    private Texture tex;
 
     private long prevTime = 0;
-
     private float contractionRate = 0;
 
     public HitCircleOverlay(int texID, float x, float y, long startTime, long endTime) {
-        centerx = x;
-        centery = y;
-
-        prevTime = startTime;
-        contractionRate = (END_SCALE - START_SCALE) / (endTime - startTime);
-
+        // Create the texture
         float[] colorTransform = {
                 1f, 0, 0, 0, 0,
                 0, 1f, 0, 0, 0,
@@ -40,60 +27,71 @@ public class HitCircleOverlay {
         colorMatrix.setSaturation(0f);
         colorMatrix.set(colorTransform);
 
-        t = new Texture(texID, x, y, 255, colorMatrix);
-        t.setRotation(180, t.getWidth() / 2, t.getHeight() / 2);
-        t.setTranslationCenter(x, y);
-        t.recomputeCoordinateMatrix();
+        tex = new Texture(texID, x, y, 255, colorMatrix);
+        tex.setRotation(180, tex.getWidth() / 2, tex.getHeight() / 2);
+        tex.setTranslationCenter(x, y);
+        tex.recomputeCoordinateMatrix();
+
+        // Set the last update time
+        prevTime = startTime;
+
+        // Set the contraction rate
+        float targetSize = 100;
+        float startScale = 1f;
+        endScale = targetSize / tex.getWidth();
+        contractionRate = (endScale - startScale) / (endTime - startTime);
     }
 
     public void setCenter(float x, float y) {
-        centerx = x;
-        centery = y;
-        t.setTranslationCenter(x, y);
-        t.recomputeCoordinateMatrix();
+        tex.setTranslationCenter(x, y);
+        tex.recomputeCoordinateMatrix();
     }
 
-    public void reset(float x, float y) {
-        centerx = x;
-        centery = y;
+    public void reset(float x, float y, long startTime, long endTime) {
+        // Reset the location
         scale = 1f;
-        t.setScaleCenter(scale, scale);
-        t.setTranslationCenter(x, y);
-        t.recomputeCoordinateMatrix();
+        tex.setScaleCenter(scale, scale);
+        tex.setTranslationCenter(x, y);
+        tex.recomputeCoordinateMatrix();
+
+        // Reset the contraction rate
+        float targetSize = 100;
+        float startScale = 1f;
+        endScale = targetSize / tex.getWidth();
+        contractionRate = (endScale - startScale) / (endTime - startTime);
+
+        prevTime = startTime;
     }
 
     // Getters
-    public float getX() {
-        return this.centerx;
-    }
+    public Texture getTex() { return this.tex; }
 
-    public float getY() {
-        return this.centery;
-    }
-
-    public Texture getT() { return this.t; }
-
+    // Update the object
     public void update(long songPos) {
-        if (scale > END_SCALE) {
+        if (scale > endScale) {
             scale += contractionRate * (songPos - prevTime);
             prevTime = songPos;
 
-            t.setScaleCenter(scale, scale);
-            t.recomputeCoordinateMatrix();
+            tex.setScaleCenter(scale, scale);
+            tex.recomputeCoordinateMatrix();
 
+            /*
             float[] colorTransform = {
                     1f, 0, 0, 0, 0,
                     0, 1f, 0, 0, 0,
                     0, 0, 1f, 0, 0,
                     0, 0, 0, 1f, 0};
-            t.setColorMatrix(colorTransform);
+            tex.setColorMatrix(colorTransform);
+            */
         } else {
+            /*
             float[] colorTransform = {
                     1f, 0, 0, 0, 0,
                     0, 1f, 0, 0, 0,
                     0, 0, 1f, 0, 0,
                     0, 0, 0, 1f, 0};
-            t.setColorMatrix(colorTransform);
+            tex.setColorMatrix(colorTransform);
+            */
         }
     }
 }

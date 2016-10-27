@@ -30,8 +30,8 @@ public class LineTracer {
         p2 = new Vector2f(-1f, -1f);
 
         path = new Path();
-        path.moveTo(p1.getX(), p1.getY());
-        path.lineTo(p2.getX(), p2.getY());
+        path.moveTo(p1.x, p1.y);
+        path.lineTo(p2.x, p2.y);
 
         p = new Paint();
         p.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -60,14 +60,14 @@ public class LineTracer {
 
     // Updates
     public void eventUpdate(float px, float py) {
-        if (MathUtil.distanceSquare(p2.getX(), p2.getY(), px, py) > 25) {
+        if (MathUtil.distanceSquare(p2.x, p2.y, px, py) > 25) {
             p1.set(p2);
             p2.set(px, py);
 
             pointList.add(new Vector2f(p2));
 
-            path.moveTo(p1.getX(), p1.getY());
-            path.lineTo(p2.getX(), p2.getY());
+            path.moveTo(p1.x, p1.y);
+            path.lineTo(p2.x, p2.y);
         }
     }
 
@@ -78,8 +78,8 @@ public class LineTracer {
                 path.reset();
 
                 for (int i = 0; i <= pointList.size() - 2; i++) {
-                    path.moveTo(pointList.get(i).getX(), pointList.get(i).getY());
-                    path.lineTo(pointList.get(i + 1).getX(), pointList.get(i + 1).getY());
+                    path.moveTo(pointList.get(i).x, pointList.get(i).y);
+                    path.lineTo(pointList.get(i + 1).x, pointList.get(i + 1).y);
                 }
             }
         }

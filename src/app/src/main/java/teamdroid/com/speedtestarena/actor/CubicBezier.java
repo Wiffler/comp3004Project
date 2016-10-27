@@ -66,8 +66,8 @@ public class CubicBezier {
 
     public void reconstruct() {
         path.reset();
-        path.moveTo(c1.getX(), c1.getY());
-        path.cubicTo(c2.getX(), c2.getY(), c3.getX(), c3.getY(), c4.getX(), c4.getY());
+        path.moveTo(c1.x, c1.y);
+        path.cubicTo(c2.x, c2.y, c3.x, c3.y, c4.x, c4.y);
     }
 
     // Getters
@@ -77,19 +77,5 @@ public class CubicBezier {
 
     public Paint getP() {
         return this.p;
-    }
-
-    // Drawable
-    public int getOpacity()
-    {
-        return PixelFormat.OPAQUE;
-    }
-
-    public void setAlpha(int arg0)
-    {
-    }
-
-    public void setColorFilter(ColorFilter arg0)
-    {
     }
 }

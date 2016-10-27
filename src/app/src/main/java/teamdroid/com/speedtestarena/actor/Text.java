@@ -1,11 +1,7 @@
 package teamdroid.com.speedtestarena.actor;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 
 /**
  * Created by Kenny on 2016-10-17.
@@ -24,7 +20,8 @@ public class Text {
 
         p = new Paint();
         p.setColor(Color.parseColor(c));
-        setTextSizeForWidth(p, 100f, 50f, text);
+        p.setLinearText(true);
+        p.setTextSize(50f);
     }
 
     // Setters
@@ -34,8 +31,7 @@ public class Text {
     }
 
     public void setText(String t) {
-        this.text = t;
-        setTextSizeForWidth(p, 100f, 50f, text);
+        text = t;
     }
 
     public void setPosition(float px, float py) {
@@ -45,7 +41,7 @@ public class Text {
 
     // Getters
     public String getText() {
-        return this.text;
+        return text;
     }
 
     public float getX() {
@@ -58,34 +54,5 @@ public class Text {
 
     public Paint getP() {
         return p;
-    }
-
-    private static void setTextSizeForWidth(Paint paint, float desiredWidth, float textSize, String text) {
-        /*
-        // Get the bounds of the text, using our testTextSize.
-        paint.setTextSize(textSize);
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-
-        // Calculate the desired size as a proportion of our testTextSize.
-        float desiredTextSize = textSize * desiredWidth / bounds.width();
-        */
-
-        // Set the paint for that size.
-        paint.setTextSize(textSize);
-    }
-
-    // Drawing
-    public int getOpacity()
-    {
-        return PixelFormat.OPAQUE;
-    }
-
-    public void setAlpha(int arg0)
-    {
-    }
-
-    public void setColorFilter(ColorFilter arg0)
-    {
     }
 }
