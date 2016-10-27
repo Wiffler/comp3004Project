@@ -3,6 +3,8 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import teamdroid.com.speedtestarena.R;
 
@@ -14,12 +16,13 @@ public class HitMap {
 
     private static SMParser parser = new SMParser();
 
-    private double bpms = 0;
+    //private double bpms = 0;
     private long offset = 0;
 
     // Only used during map generation
     private ArrayList<Integer> spawnMap;
     private ArrayList<Integer> measureMap;
+    private HashMap<Integer, Float> bpmsMap;
 
     public float[][] spawnLoc = new float[2][64];
     public ArrayList<HitInfo> spawnInfoList;
@@ -28,7 +31,10 @@ public class HitMap {
     public HitMap(float screenWidth, float screenHeight, float objWidth) {
         spawnMap = new ArrayList<Integer>();
         measureMap = new ArrayList<Integer>();
+        bpmsMap = new HashMap<Integer, Float>();
+
         spawnInfoList = new ArrayList<HitInfo>();
+
         generateLocationArray(screenWidth, screenHeight, objWidth);
     }
 
@@ -51,13 +57,6 @@ public class HitMap {
             spawnLoc[1][4 * i + 1] = verticalTopBorder + (objWidth + verticalGap) * i;
             spawnLoc[1][4 * i + 2] = verticalTopBorder + (objWidth + verticalGap) * i;
             spawnLoc[1][4 * i + 3] = verticalTopBorder + (objWidth + verticalGap) * i;
-
-            /*
-            System.out.println("x1: " + spawnLocX[i] + " x2: " + spawnLocX[i + 1] +
-                    " x3: " + spawnLocX[i + 2] + " x4: " + spawnLocX[i + 3]);
-            System.out.println("y1: " + spawnLocY[i] + " y2: " + spawnLocY[i + 1] +
-                    " y3: " + spawnLocY[i + 2] + " y4: " + spawnLocY[i + 3]);
-            */
         }
     }
 
@@ -66,9 +65,9 @@ public class HitMap {
         this.offset = offset;
     }
 
-    public void setBPMS(double bpms) {
+    /*public void setBPMS(double bpms) {
         this.bpms = bpms;
-    }
+    }*/
 
     public void addSpawnMap(int code) {
         spawnMap.add(code);
@@ -78,22 +77,40 @@ public class HitMap {
         measureMap.add(code);
     }
 
-    // Initialization and map generation
-    public void initialise(Context context) {
-        // Parse the sound map
-        parser.readSM(context, R.raw.test_sound_file2_sm, this);
+    public void addBPMSMap(int noteNumber, float bpms) {
+        bpmsMap.put(noteNumber, bpms);
+    }
 
-        // set the spawn times
-        int vinterval = 0;
+    // Initialization and map generation
+    public void initialise(Context context, int smID) {
+        // Parse the sound map
+        parser.readSM(context, smID, this);
+
+        /*
+        for (Map.Entry<Integer, Float> entry : bpmsMap.entrySet()) {
+            Integer key = entry.getKey();
+            Float value = entry.getValue();
+            System.out.println("Note: " + key + " BPMS: " + value);
+        }*/
+
+        // Tracking the measure
         int measureIndex = 0;
         int measureCounter = 0;
         int measureLength = measureMap.get(measureIndex);
-        int vintervalMax = (measureLength / 4) - 1;
-        double bmpsInterval = 60000 / bpms;
+
+        // Computing the location index
+        int vinterval = 0;
+        //int vintervalMax = (measureLength / 4) - 1;
+        int vintervalMax = 16 - 1;
+
+        // Tracking the song position at a given beat
+        double bpms = 0;
+        double interval = 0;
         long musicTime = 0;
 
+        // Computing the life time of a hitbox
         long spawnTime, deathTime, beatTime;
-        long startDelay = -1000;
+        long startDelay = -1750;
         long endDelay = 100;
 
         // offset needs sign switched
@@ -102,7 +119,7 @@ public class HitMap {
 
         System.out.println("Beat count: " + spawnMap.size());
 
-        // go through the notes
+        // Iterate through all the notes
         for (int i = 0; i < spawnMap.size(); i++) {
             int code = spawnMap.get(i);
 
@@ -195,18 +212,16 @@ public class HitMap {
                     break;
             }
 
-            // check the interval
-            /*
-            if (vinterval == vintervalMax) {
-                vinterval = 0;
-            } else {
-                vinterval++;
+            // Check if there is a more accurate bpms number
+            if (bpmsMap.containsKey(i)) {
+                bpms = bpmsMap.get(i);
+                // Recompute the interval using the updated bpms
+                interval = 60000 / bpms;
             }
-            */
+            musicTime += ((long) (interval / (measureLength / 4)));
+            System.out.println(musicTime);
 
-            musicTime += ((long) (bmpsInterval / (measureLength / 4)));
-
-            // check the measure
+            // Check if we changed measures
             if (measureCounter == measureLength - 1) {
                 measureCounter = 0;
                 measureIndex++;

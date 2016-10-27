@@ -92,14 +92,17 @@ public class GameTest1MainThread extends Thread {
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.test_sound_file2_bg,
                                     gamePanel.getWidth(), gamePanel.getHeight(), true);
 
-        // Setup the audio
-        audioDelayThread = new AudioDelayThread();
-        song = new GameAudio(timer);
-        song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
+        // Set the background drawable
+        bg = new Background(gamePanel.activity, R.drawable.test_sound_file2_bg, gamePanel.getWidth(), gamePanel.getHeight());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            gamePanel.setBackground(bg);
+        } else {
+            gamePanel.setBackgroundDrawable(bg);
+        }
 
         // Setup the cursor and text
-        scoreText = new Text(50, 50, "Score:", "#FFFFFF");
-        fpsText = new Text(50, 100, "", "#FFFFFF");
+        scoreText = new Text(50, 50, "Score: 0", "#FFFFFF");
+        fpsText = new Text(50, 100, "FPS:", "#FFFFFF");
         trace = new ParticleTracer();
 
         // Setup the hitcircle objects
@@ -108,17 +111,15 @@ public class GameTest1MainThread extends Thread {
             hitcircleList.add(new HitCircle(R.drawable.hitcircle2, 0, 0, 0, 0, 0));
         }
 
-        // Setup the song mapping
-        mapper = new HitMap(gamePanel.getWidth(), gamePanel.getHeight(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
-        mapper.initialise(gamePanel.activity);
+        // Setup the audio
+        audioDelayThread = new AudioDelayThread();
+        song = new GameAudio(timer);
+        song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
 
-        // Set the background drawable
-        bg = new Background(gamePanel.activity, R.drawable.test_sound_file2_bg, gamePanel.getWidth(), gamePanel.getHeight());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            gamePanel.setBackground(bg);
-        } else {
-            gamePanel.setBackgroundDrawable(bg);
-        }
+        // Setup the audio mapping
+        //mapper = new HitMap(gamePanel.getWidth(), gamePanel.getHeight(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
+        mapper = new HitMap(gamePanel.getHeight(), gamePanel.getWidth(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
+        mapper.initialise(gamePanel.activity, R.raw.test_sound_file2_sm);
 
         // Set redraw flag
         dirty = true;
@@ -193,7 +194,6 @@ public class GameTest1MainThread extends Thread {
             }
         }
 
-
         // Spawn the hitcircles
         HitInfo info = null;
         if (mapper.spawnTimeIndex < mapper.spawnInfoList.size()) {
@@ -206,8 +206,13 @@ public class GameTest1MainThread extends Thread {
                 for (int i = index; i < hitcircleList.size(); i++) {
                     h = hitcircleList.get(i);
                     if (!h.active) {
+                        /*
                         h.activate(mapper.spawnLoc[0][info.spawnLocation],
                                    mapper.spawnLoc[1][info.spawnLocation],
+                                   info.spawnTime, info.deathTime, info.beatTime);
+                                   */
+                        h.activate(mapper.spawnLoc[1][info.spawnLocation],
+                                   mapper.spawnLoc[0][info.spawnLocation],
                                    info.spawnTime, info.deathTime, info.beatTime);
                         index = i + 1;
                         break;

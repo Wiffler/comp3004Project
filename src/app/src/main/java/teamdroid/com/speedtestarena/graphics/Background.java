@@ -21,7 +21,7 @@ public class Background extends Drawable {
         b = loadBitmap(context, id, screenWidth, screenHeight, true);
 
         tex = new Texture(id, 0, 0, b.getWidth(), b.getHeight(), 255, null);
-        tex.setTranslation(0, (screenHeight - tex.getHeight()) / 2);
+        tex.setTranslation((screenWidth - tex.getWidth()) / 2, (screenHeight - tex.getHeight()) / 2);
         tex.recomputeCoordinateMatrix();
     }
 
