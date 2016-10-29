@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import teamdroid.com.speedtestarena.R;
+import teamdroid.com.speedtestarena.actor.Button;
 import teamdroid.com.speedtestarena.actor.HitCircle;
 import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Background;
@@ -47,22 +48,25 @@ public class GameTest1MainThread extends Thread {
     // Score
     public volatile int score = 0; // might create a player actor instead
 
-    // UI, Audio and Timer
+    // UI, Audio and Timer objects
     private SurfaceHolder surfaceHolder;
     private GameTest1 gamePanel;
     public GameAudio song;
     public GameTimer timer;
     public AudioDelayThread audioDelayThread;
 
-    // Actors
+    // Actors and graphics objects
     public Text scoreText, fpsText;
+    public Button quitButton;
     public ParticleTracer trace;
     public HitMap mapper;
     public Background bg;
 
-    // Lists to hold actors
-    //public ArrayList<Particle> particleList;
+    // List(s) to hold actors
     public volatile ArrayList<HitCircle> hitcircleList;
+
+    // Resource IDs
+    int songID, simfileID, bgID;
 
     // Constructor(s)
     public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel) {
@@ -70,6 +74,24 @@ public class GameTest1MainThread extends Thread {
 
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
+
+        this.songID = 0;
+        this.simfileID = 0;
+        this.bgID = 0;
+
+        timer = new GameTimer();
+    }
+
+    public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel,
+                               int songID, int simfileID, int bgID) {
+        super();
+
+        this.surfaceHolder = surfaceHolder;
+        this.gamePanel = gamePanel;
+
+        this.songID = songID;
+        this.simfileID = simfileID;
+        this.bgID = bgID;
 
         timer = new GameTimer();
     }
@@ -91,18 +113,23 @@ public class GameTest1MainThread extends Thread {
                                     200, 200, false);
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.test_sound_file2_bg,
                                     gamePanel.getWidth(), gamePanel.getHeight(), true);
+        gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.star,
+                                    100, 100, true);
 
-        // Set the background drawable
-        bg = new Background(gamePanel.activity, R.drawable.test_sound_file2_bg, gamePanel.getWidth(), gamePanel.getHeight());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            gamePanel.setBackground(bg);
-        } else {
-            gamePanel.setBackgroundDrawable(bg);
+        // Set the background drawable if id is valid
+        if (bgID != 0) {
+            bg = new Background(gamePanel.activity, bgID, gamePanel.getWidth(), gamePanel.getHeight());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                gamePanel.setBackground(bg);
+            } else {
+                gamePanel.setBackgroundDrawable(bg);
+            }
         }
 
-        // Setup the cursor and text
+        // Setup the cursor, button and text
         scoreText = new Text(50, 50, "Score: 0", "#FFFFFF");
         fpsText = new Text(50, 100, "FPS:", "#FFFFFF");
+        quitButton = new Button(R.drawable.star, gamePanel.getWidth() - 100, 0);
         trace = new ParticleTracer();
 
         // Setup the hitcircle objects
@@ -114,12 +141,12 @@ public class GameTest1MainThread extends Thread {
         // Setup the audio
         audioDelayThread = new AudioDelayThread();
         song = new GameAudio(timer);
-        song.createAudio(gamePanel.activity, R.raw.test_sound_file2);
+        song.createAudio(gamePanel.activity, songID);
 
         // Setup the audio mapping
         //mapper = new HitMap(gamePanel.getWidth(), gamePanel.getHeight(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
         mapper = new HitMap(gamePanel.getHeight(), gamePanel.getWidth(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
-        mapper.initialise(gamePanel.activity, R.raw.test_sound_file2_sm);
+        mapper.initialise(gamePanel.activity, simfileID);
 
         // Set redraw flag
         dirty = true;
@@ -142,7 +169,7 @@ public class GameTest1MainThread extends Thread {
 
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (e.getY() > gamePanel.getHeight() - 50) {
+                    if (quitButton.inButton(e.getX(), e.getY())) {
                         this.setRunning(false);
                         ((Activity) gamePanel.getContext()).finish();
 

@@ -30,8 +30,8 @@ public class Texture {
         // Setup the coordinate matrix
         scaleX = 1f;
         scaleY = 1f;
-        translateX = 0f;
-        translateY = 0f;
+        translateX = px;
+        translateY = py;
         angleDegrees = 0f;
         rotationX = 0f;
         rotationY = 0f;
@@ -61,8 +61,8 @@ public class Texture {
         // Setup the coordinate matrix
         scaleX = 1f;
         scaleY = 1f;
-        translateX = 0f;
-        translateY = 0f;
+        translateX = px;
+        translateY = py;
         angleDegrees = 0f;
         rotationX = 0f;
         rotationY = 0f;

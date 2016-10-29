@@ -117,7 +117,7 @@ public class HitMap {
         // ex. offset = -0.567 means start at 567ms point on the audio file
         offset = -1 * offset;
 
-        System.out.println("Beat count: " + spawnMap.size());
+        //System.out.println("Beat count: " + spawnMap.size());
 
         // Iterate through all the notes
         for (int i = 0; i < spawnMap.size(); i++) {
@@ -219,7 +219,7 @@ public class HitMap {
                 interval = 60000 / bpms;
             }
             musicTime += ((long) (interval / (measureLength / 4)));
-            System.out.println(musicTime);
+            //System.out.println(musicTime);
 
             // Check if we changed measures
             if (measureCounter == measureLength - 1) {
@@ -233,7 +233,7 @@ public class HitMap {
             }
         }
 
-        System.out.println(measureMap.size());
+        //System.out.println(measureMap.size());
     }
 
     private int updateVInterval(int vinterval, int vintervalMax) {

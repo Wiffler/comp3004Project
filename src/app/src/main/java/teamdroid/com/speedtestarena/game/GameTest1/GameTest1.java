@@ -3,11 +3,11 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
@@ -21,7 +21,6 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public volatile boolean ready = false;
 
-    public Handler delayHandler;
     public Renderer render;
     public BitmapLoader textures;
     public EventQueue<GameTest1Event> events;
@@ -47,7 +46,8 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         events = new EventQueue<GameTest1Event>();
 
         // Create the game thread
-        gameThread = new GameTest1MainThread(getHolder(), this);
+        gameThread = new GameTest1MainThread(getHolder(), this,
+                R.raw.test_sound_file2, R.raw.test_sound_file2_sm, R.drawable.test_sound_file2_bg);
         gameThread.setRunning(true);
         gameThread.start();
 
@@ -109,6 +109,9 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         // Draw the game text
         render.render(canvas, gameThread.fpsText);
         render.render(canvas, gameThread.scoreText);
+
+        // Draw the quit button
+        render.render(canvas, gameThread.quitButton);
 
         // Draw the cursor
         render.render(canvas, gameThread.trace);

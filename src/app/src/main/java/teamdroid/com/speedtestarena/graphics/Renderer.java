@@ -3,6 +3,7 @@ package teamdroid.com.speedtestarena.graphics;
 import android.content.Context;
 import android.graphics.Canvas;
 
+import teamdroid.com.speedtestarena.actor.Button;
 import teamdroid.com.speedtestarena.actor.ShadowedCurve;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.CubicBezier;
@@ -97,5 +98,9 @@ public class Renderer {
     public static void render(Canvas canvas, ShadowedCurve obj) {
         canvas.drawPath(obj.getPath(), obj.getShadowPaint());
         canvas.drawPath(obj.getPath(), obj.getSolidPaint());
+    }
+
+    public static void render(Canvas canvas, Button obj) {
+        render(canvas, obj.getTexture());
     }
 }
