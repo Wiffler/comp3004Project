@@ -91,7 +91,8 @@ public class HitMap {
             Integer key = entry.getKey();
             Float value = entry.getValue();
             System.out.println("Note: " + key + " BPMS: " + value);
-        }*/
+        }
+        */
 
         // Tracking the measure
         int measureIndex = 0;
@@ -115,7 +116,8 @@ public class HitMap {
 
         // offset needs sign switched
         // ex. offset = -0.567 means start at 567ms point on the audio file
-        offset = -1 * offset;
+        //offset = -1 * offset;
+        offset = Math.abs(offset);
 
         //System.out.println("Beat count: " + spawnMap.size());
 

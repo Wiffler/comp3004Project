@@ -50,7 +50,7 @@ public class SMParser {
                 else if (line.startsWith("#NOTES:")) {
                     parseState += 1;
                 }
-                else if (line.matches("^[01234MKLF][01234MKLF][01234MKLF][01234MKLF]")) {
+                else if (line.matches("^[01234MKLF][01234MKLF][01234MKLF][01234MKLF]") && (parseState == 3)) {
                     readNoteCode(line, mapper);
                     measureCounter += 1;
                 }
@@ -109,6 +109,9 @@ public class SMParser {
                 map.addBPMSMap(noteNum, bpms);
                 state = 0;
             } else if (c == ';') {
+                bpms = Float.parseFloat(num);
+                num = "";
+                map.addBPMSMap(noteNum, bpms);
                 state = 2;
             }
 

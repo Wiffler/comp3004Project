@@ -46,8 +46,18 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         events = new EventQueue<GameTest1Event>();
 
         // Create the game thread
+
         gameThread = new GameTest1MainThread(getHolder(), this,
                 R.raw.test_sound_file2, R.raw.test_sound_file2_sm, R.drawable.test_sound_file2_bg);
+
+        /*
+        gameThread = new GameTest1MainThread(getHolder(), this,
+                R.raw.test_sound_file3, R.raw.test_sound_file3_sm, R.drawable.test_sound_file3_bg);
+                */
+        /*
+        gameThread = new GameTest1MainThread(getHolder(), this,
+                R.raw.test_sound_file4, R.raw.test_sound_file4_sm, 0);
+                */
         gameThread.setRunning(true);
         gameThread.start();
 
