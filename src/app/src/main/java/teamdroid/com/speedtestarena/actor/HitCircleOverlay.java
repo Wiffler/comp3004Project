@@ -1,5 +1,6 @@
 package teamdroid.com.speedtestarena.actor;
 
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 
 import teamdroid.com.speedtestarena.graphics.Texture;
@@ -10,11 +11,22 @@ import teamdroid.com.speedtestarena.graphics.Texture;
 
 public class HitCircleOverlay {
     private float endScale = 0f;
+    private float startScale = 1f;
     private float scale = 1f;
     private Texture tex;
 
     private long prevTime = 0;
     private float contractionRate = 0;
+
+    // Color Interpolation
+    private int mEnd_Red = 255;
+    private int mEnd_Green = 255;
+    private int mEnd_Blue = 255;
+    private int mEnd_Alpha = 255;
+    private int mStart_Red = 255;
+    private int mStart_Green = 165;
+    private int mStart_Blue = 0;
+    private int mStart_Alpha = 155;
 
     public HitCircleOverlay(int texID, float x, float y, long startTime, long endTime) {
         // Create the texture
@@ -69,29 +81,33 @@ public class HitCircleOverlay {
     // Update the object
     public void update(long songPos) {
         if (scale > endScale) {
+            // Compute the new texture scale
             scale += contractionRate * (songPos - prevTime);
-            prevTime = songPos;
-
             tex.setScaleCenter(scale, scale);
             tex.recomputeCoordinateMatrix();
+            prevTime = songPos;
 
-            /*
-            float[] colorTransform = {
-                    1f, 0, 0, 0, 0,
-                    0, 1f, 0, 0, 0,
-                    0, 0, 1f, 0, 0,
-                    0, 0, 0, 1f, 0};
-            tex.setColorMatrix(colorTransform);
-            */
-        } else {
-            /*
-            float[] colorTransform = {
-                    1f, 0, 0, 0, 0,
-                    0, 1f, 0, 0, 0,
-                    0, 0, 1f, 0, 0,
-                    0, 0, 0, 1f, 0};
-            tex.setColorMatrix(colorTransform);
-            */
+            // Compute the new texture color filter *WIP
+            tex.setPorterDuffColorFilter(getInterpolatedColor((scale - endScale) / (startScale - endScale)));
         }
+    }
+
+    // Color Interpolation
+    private int getInterpolatedColor(float t) {
+        if (t < 0) {
+            t = 0f;
+        } else if (t > 1) {
+            t = 1f;
+        }
+
+        return Color.argb(
+                interpolateInt(mStart_Alpha, mEnd_Alpha - mStart_Alpha, t),
+                interpolateInt(mStart_Red, mEnd_Red, t),
+                interpolateInt(mStart_Green, mEnd_Green, t),
+                interpolateInt(mStart_Blue, mEnd_Blue, t));
+    }
+
+    private int interpolateInt(int a, int b, float t) {
+        return (int) (a + (b - a) * t);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 import teamdroid.com.speedtestarena.actor.Button;
+import teamdroid.com.speedtestarena.actor.HitCircleNeonOverlay;
 import teamdroid.com.speedtestarena.actor.ShadowedCurve;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.CubicBezier;
@@ -79,7 +80,7 @@ public class Renderer {
     }
 
     public static void render(Canvas canvas, Texture obj) {
-        canvas.drawBitmap(bitmaps.getBitmap(obj.getID()), obj.getMatrix(), obj.getP());
+        canvas.drawBitmap(bitmaps.getBitmap(obj.getID()), obj.getMatrix(), obj.getPaint());
     }
 
     public static void render(Canvas canvas, Particle obj) {
@@ -91,8 +92,8 @@ public class Renderer {
     }
 
     public static void render(Canvas canvas, HitCircle obj) {
+        render(canvas, obj.getTexture());
         render(canvas, obj.getOverlay());
-        render(canvas, obj.getT());
     }
 
     public static void render(Canvas canvas, ShadowedCurve obj) {
@@ -102,5 +103,9 @@ public class Renderer {
 
     public static void render(Canvas canvas, Button obj) {
         render(canvas, obj.getTexture());
+    }
+
+    public static void render(Canvas canvas, HitCircleNeonOverlay obj) {
+        canvas.drawCircle(obj.getX(), obj.getY(), obj.getRadius(), obj.getPaint());
     }
 }

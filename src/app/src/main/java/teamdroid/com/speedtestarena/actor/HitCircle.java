@@ -14,7 +14,8 @@ public class HitCircle {
     public volatile boolean active;
 
     private Texture tex;
-    private HitCircleOverlay overlay;
+    //private HitCircleOverlay overlay;
+    private HitCircleNeonOverlay overlay;
 
     private float centerx;
     private float centery;
@@ -50,7 +51,8 @@ public class HitCircle {
         radius = tex.getWidth() / 2; // assuming square bitmap
 
         // Create the overlay object
-        overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, centerx, centery, startTime, beatTime);
+        //overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, centerx, centery, startTime, beatTime);
+        overlay = new HitCircleNeonOverlay(centerx, centery, 200, startTime, beatTime);
 
         active = false;
     }
@@ -71,26 +73,27 @@ public class HitCircle {
 
     // Getters
     public float getX() {
-        return this.centerx;
+        return centerx;
     }
 
     public float getY() {
-        return this.centery;
+        return centery;
     }
 
     public long getBeatTime() {
         return beatTime;
     }
 
-    public float getR() {
-        return this.radius;
+    public float getRadius() {
+        return radius;
     }
 
-    public Texture getT() {
-        return this.tex;
+    public Texture getTexture() {
+        return tex;
     }
 
-    public HitCircleOverlay getOverlay() { return this.overlay; }
+    /*public HitCircleOverlay getOverlay() { return this.overlay; }*/
+    public HitCircleNeonOverlay getOverlay() { return overlay; }
 
     public boolean inCircle(float px, float py) {
         if (MathUtil.distanceSquare(centerx, centery, px, py) <= radius * radius) {

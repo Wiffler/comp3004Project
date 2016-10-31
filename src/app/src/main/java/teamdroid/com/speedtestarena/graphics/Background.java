@@ -52,7 +52,7 @@ public class Background extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(b, tex.getMatrix(), tex.getP());
+        canvas.drawBitmap(b, tex.getMatrix(), tex.getPaint());
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Button {
     public Button(int id, float x, float y) {
         this.x = x;
         this.y = y;
-        tex = new Texture(id, x, y, 255, null);
+        tex = new Texture(id, x, y, 255);
         width = tex.getWidth();
         height = tex.getHeight();
     }
