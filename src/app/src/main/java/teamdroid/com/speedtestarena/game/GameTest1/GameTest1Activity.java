@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import teamdroid.com.speedtestarena.game.GameTest1.GameTest1;
+import teamdroid.com.speedtestarena.graphics.Background;
 
 public class GameTest1Activity extends AppCompatActivity {
 
@@ -29,6 +30,19 @@ public class GameTest1Activity extends AppCompatActivity {
     protected void onStop() {
         System.out.println("Pausing game activity.");
         super.onStop();
+    }
+
+    public void setGameBG(final GameTest1 surface, final Background bg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    surface.setBackground(bg);
+                } else {
+                    surface.setBackgroundDrawable(bg);
+                }
+            }
+        });
     }
 
     public void setFullScreen() {

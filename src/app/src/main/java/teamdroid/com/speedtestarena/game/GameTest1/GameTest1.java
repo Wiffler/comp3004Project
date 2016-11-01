@@ -3,11 +3,13 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import teamdroid.com.speedtestarena.R;
+import teamdroid.com.speedtestarena.graphics.Background;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;

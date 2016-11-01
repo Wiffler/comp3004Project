@@ -119,11 +119,13 @@ public class GameTest1MainThread extends Thread {
         // Set the background drawable if id is valid
         if (bgID != 0) {
             bg = new Background(gamePanel.activity, bgID, gamePanel.getWidth(), gamePanel.getHeight());
+            ((GameTest1Activity) gamePanel.activity).setGameBG(gamePanel, bg);
+            /*
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 gamePanel.setBackground(bg);
             } else {
                 gamePanel.setBackgroundDrawable(bg);
-            }
+            }*/
         }
 
         // Setup the cursor, button and text
