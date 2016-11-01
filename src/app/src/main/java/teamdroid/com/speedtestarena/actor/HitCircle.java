@@ -2,7 +2,6 @@ package teamdroid.com.speedtestarena.actor;
 
 import android.graphics.ColorMatrix;
 
-import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Texture;
 import teamdroid.com.speedtestarena.math.MathUtil;
 
@@ -52,7 +51,7 @@ public class HitCircle {
 
         // Create the overlay object
         //overlay = new HitCircleOverlay(R.drawable.hitcircleoverlay, centerx, centery, startTime, beatTime);
-        overlay = new HitCircleNeonOverlay(centerx, centery, 200, startTime, beatTime);
+        overlay = new HitCircleNeonOverlay(centerx, centery, tex.getWidth() + 50, startTime, beatTime);
 
         active = false;
     }

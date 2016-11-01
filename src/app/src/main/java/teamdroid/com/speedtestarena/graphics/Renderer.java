@@ -49,6 +49,7 @@ public class Renderer {
 
     // Actor rendering
     public static void render(Canvas canvas, Text obj) {
+        canvas.drawText(obj.getText(), obj.getX(), obj.getY(), obj.getStrokePaint());
         canvas.drawText(obj.getText(), obj.getX(), obj.getY(), obj.getP());
     }
 

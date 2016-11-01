@@ -13,17 +13,25 @@ import teamdroid.com.speedtestarena.R;
  */
 
 public class HitMap {
+    // Delay times
+    public static long startDelay = -1750;
+    public static long endDelay = 100;
 
+    // Parser object
     private static SMParser parser = new SMParser();
 
-    //private double bpms = 0;
+    // Sound offset
     private long offset = 0;
+
+    // Total possible score
+    public int maxScore = 0;
 
     // Only used during map generation
     private ArrayList<Integer> spawnMap;
     private ArrayList<Integer> measureMap;
     private HashMap<Integer, Float> bpmsMap;
 
+    // Generated mappings
     public float[][] spawnLoc = new float[2][64];
     public ArrayList<HitInfo> spawnInfoList;
     public volatile int spawnTimeIndex;
@@ -39,15 +47,18 @@ public class HitMap {
     }
 
     private void generateLocationArray(float width, float height, float objWidth) {
-        float horizontalBorderSize = 100;
-        float horizontalGapSize = (width - (2 * horizontalBorderSize + 4 * objWidth)) / 3;
+        int widthCount = 4;
+        int heightCount = 16;
 
-        float verticalTopBorder = 175;
-        float verticalBottomBorder = 100;
-        float verticalGap = (height - (verticalTopBorder + verticalBottomBorder + 16 * objWidth)) / 15;
+        float horizontalBorderSize = 50;
+        float horizontalGapSize = (width - (2 * horizontalBorderSize + widthCount * objWidth)) / (widthCount - 1);
+
+        float verticalTopBorder = 50;
+        float verticalBottomBorder = 75;
+        float verticalGap = (height - (verticalTopBorder + verticalBottomBorder + heightCount * objWidth)) / (heightCount - 1);
 
         // Generate spawnLoc matrix
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < heightCount; i++) {
             spawnLoc[0][4 * i] = horizontalBorderSize;
             spawnLoc[0][4 * i + 1] = horizontalBorderSize + objWidth + horizontalGapSize;
             spawnLoc[0][4 * i + 2] = horizontalBorderSize + 2 * (objWidth + horizontalGapSize);
@@ -64,10 +75,6 @@ public class HitMap {
     public void setOffset(long offset) {
         this.offset = offset;
     }
-
-    /*public void setBPMS(double bpms) {
-        this.bpms = bpms;
-    }*/
 
     public void addSpawnMap(int code) {
         spawnMap.add(code);
@@ -111,8 +118,7 @@ public class HitMap {
 
         // Computing the life time of a hitbox
         long spawnTime, deathTime, beatTime;
-        long startDelay = -1750;
-        long endDelay = 100;
+
 
         // offset needs sign switched
         // ex. offset = -0.567 means start at 567ms point on the audio file
@@ -235,6 +241,7 @@ public class HitMap {
             }
         }
 
+        maxScore = spawnInfoList.size() * 100;
         //System.out.println(measureMap.size());
     }
 

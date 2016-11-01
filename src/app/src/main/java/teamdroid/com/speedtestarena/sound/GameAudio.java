@@ -4,6 +4,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import teamdroid.com.speedtestarena.utility.GameTimer;
 
 import static java.lang.Math.min;
@@ -13,7 +16,12 @@ import static java.lang.Math.min;
  */
 
 public class GameAudio {
-    private MediaPlayer mp = null;
+    private final Lock audioLock = new ReentrantLock(true);
+
+    private volatile MediaPlayer mp = null;
+
+    // song info
+    private int songDuration;
 
     // Manually implement start delay
     private volatile boolean start = false;
@@ -21,6 +29,7 @@ public class GameAudio {
     private long delay = 0;
     private GameTimer g = null;
 
+    // Constructors
     public GameAudio() {
         super();
     }
@@ -31,7 +40,12 @@ public class GameAudio {
     }
 
     public void createAudio(Context activity, int resID) {
+        loadAudio(activity, resID);
+    }
+
+    public void loadAudio(Context activity, int resID) {
         mp = MediaPlayer.create(activity, resID);
+        songDuration = mp.getDuration();
     }
 
     public void startAudio() {
@@ -70,30 +84,37 @@ public class GameAudio {
     }
 
     public long getPosition() {
+        long retVal;
+
         if (mp != null) {
+            audioLock.lock();
             if (mp.getCurrentPosition() <= 0 && start) {
-                return min((g.getTime() - startTime) - delay, 0l);
+                retVal = min((g.getTime() - startTime) - delay, 0l);
             } else {
-                return mp.getCurrentPosition();
+                retVal = mp.getCurrentPosition();
             }
+            audioLock.unlock();
+            return retVal;
         } else {
-            return -2;
+            return -1;
         }
     }
 
     public long getDuration() {
         if (mp != null) {
-            return mp.getDuration();
+            return songDuration;
         } else {
-            return -2;
+            return -1;
         }
     }
 
     public void cleanup() {
         if (mp != null) {
+            audioLock.lock();
             mp.reset();
             mp.release();
             mp = null;
+            audioLock.unlock();
         }
     }
 }

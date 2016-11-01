@@ -22,14 +22,23 @@ public class GameTest1Activity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        System.out.println("Exiting game activity.");
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
-        System.out.println("Pausing game activity.");
         super.onStop();
+        this.finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void setGameBG(final GameTest1 surface, final Background bg){
@@ -62,7 +71,7 @@ public class GameTest1Activity extends AppCompatActivity {
 
         } else if (Build.VERSION.SDK_INT >= 19) {
             View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
             decorView.setSystemUiVisibility(uiOptions);
         }
     }

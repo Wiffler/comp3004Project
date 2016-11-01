@@ -12,7 +12,7 @@ import android.graphics.Shader;
 
 public class HitCircleNeonOverlay {
     // Constants
-    private static float TARGET_SIZE = 100;
+    private static float TARGET_SIZE = 75;
     private static int[] colors ={0x00000000, 0xDD00CFFF, 0x00000000};
     private static float[] distances ={0.35f, 0.50f, 0.65f};
 

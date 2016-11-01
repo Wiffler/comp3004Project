@@ -3,13 +3,11 @@ package teamdroid.com.speedtestarena.game.GameTest1;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.graphics.Background;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
@@ -48,18 +46,18 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         events = new EventQueue<GameTest1Event>();
 
         // Create the game thread
-
+        /*
         gameThread = new GameTest1MainThread(getHolder(), this,
                 R.raw.test_sound_file2, R.raw.test_sound_file2_sm, R.drawable.test_sound_file2_bg);
-
+        */
         /*
         gameThread = new GameTest1MainThread(getHolder(), this,
                 R.raw.test_sound_file3, R.raw.test_sound_file3_sm, R.drawable.test_sound_file3_bg);
-                */
-        /*
+        */
+
         gameThread = new GameTest1MainThread(getHolder(), this,
-                R.raw.test_sound_file4, R.raw.test_sound_file4_sm, 0);
-                */
+                R.raw.test_sound_file4, R.raw.test_sound_file4_sm, R.drawable.test_sound_file4_bg);
+
         gameThread.setRunning(true);
         gameThread.start();
 
@@ -73,9 +71,9 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         while (retry) {
             try {
                 // wait for the threads to end
+                gameThread.setRunning(false);
                 gameThread.join();
                 retry = false;
-
             } catch (InterruptedException e) {
                 System.out.println("Thread exit failed.");
             }
@@ -111,16 +109,18 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
     private void drawGame(Canvas canvas) {
         gameThread.updateLock.lock();
 
+        // Draw the game text
+        render.render(canvas, gameThread.fpsText);
+        render.render(canvas, gameThread.scoreText);
+        render.render(canvas, gameThread.totalScoreText);
+        render.render(canvas, gameThread.songDurationText);
+
         // Draw the hitcircles
         for (int i = 0; i < gameThread.hitcircleList.size(); i++) {
             if (gameThread.hitcircleList.get(i).active) {
                 render.render(canvas, gameThread.hitcircleList.get(i));
             }
         }
-
-        // Draw the game text
-        render.render(canvas, gameThread.fpsText);
-        render.render(canvas, gameThread.scoreText);
 
         // Draw the quit button
         render.render(canvas, gameThread.quitButton);

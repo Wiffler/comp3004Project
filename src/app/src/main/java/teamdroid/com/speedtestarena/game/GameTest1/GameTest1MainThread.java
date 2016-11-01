@@ -56,7 +56,7 @@ public class GameTest1MainThread extends Thread {
     public AudioDelayThread audioDelayThread;
 
     // Actors and graphics objects
-    public Text scoreText, fpsText;
+    public Text scoreText, fpsText, totalScoreText, songDurationText;
     public Button quitButton;
     public ParticleTracer trace;
     public HitMap mapper;
@@ -108,7 +108,7 @@ public class GameTest1MainThread extends Thread {
         int[] idList = {R.drawable.cursor, R.drawable.cursortrail};
         gamePanel.render.loadBitmaps(gamePanel.activity, idList);
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.hitcircle2,
-                                    100, 100, false);
+                                    75, 75, false);
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.hitcircleoverlay,
                                     200, 200, false);
         gamePanel.render.loadBitmap(gamePanel.activity, R.drawable.test_sound_file2_bg,
@@ -120,24 +120,6 @@ public class GameTest1MainThread extends Thread {
         if (bgID != 0) {
             bg = new Background(gamePanel.activity, bgID, gamePanel.getWidth(), gamePanel.getHeight());
             ((GameTest1Activity) gamePanel.activity).setGameBG(gamePanel, bg);
-            /*
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                gamePanel.setBackground(bg);
-            } else {
-                gamePanel.setBackgroundDrawable(bg);
-            }*/
-        }
-
-        // Setup the cursor, button and text
-        scoreText = new Text(50, 50, "Score: 0", "#FFFFFF");
-        fpsText = new Text(50, 100, "FPS:", "#FFFFFF");
-        quitButton = new Button(R.drawable.star, gamePanel.getWidth() - 100, 0);
-        trace = new ParticleTracer();
-
-        // Setup the hitcircle objects
-        hitcircleList = new ArrayList<HitCircle>(HITCIRCLE_MAX);
-        for (int i = 0; i < HITCIRCLE_MAX; i++) {
-            hitcircleList.add(new HitCircle(R.drawable.hitcircle2, 0, 0, 0, 0, 0));
         }
 
         // Setup the audio
@@ -146,9 +128,22 @@ public class GameTest1MainThread extends Thread {
         song.createAudio(gamePanel.activity, songID);
 
         // Setup the audio mapping
-        //mapper = new HitMap(gamePanel.getWidth(), gamePanel.getHeight(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
         mapper = new HitMap(gamePanel.getHeight(), gamePanel.getWidth(), Renderer.getBitmapWidth(R.drawable.hitcircle2));
         mapper.initialise(gamePanel.activity, simfileID);
+
+        // Setup the cursor, button and text
+        scoreText = new Text(5, 50, "Score: 0", 0xFFFFFFFF);
+        totalScoreText = new Text(305, 50, "Max: " + mapper.maxScore, 0xFFFFFFFF);
+        fpsText = new Text(5, 150, "FPS:", 0xFFFFFFFF);
+        songDurationText = new Text(5, 100, "Time: " + (song.getDuration() / 1000) + "s", 0xFFFFFFFF);
+        quitButton = new Button(R.drawable.star, gamePanel.getWidth() - 100, 0);
+        trace = new ParticleTracer();
+
+        // Setup the hitcircle objects
+        hitcircleList = new ArrayList<HitCircle>(HITCIRCLE_MAX);
+        for (int i = 0; i < HITCIRCLE_MAX; i++) {
+            hitcircleList.add(new HitCircle(R.drawable.hitcircle2, 0, 0, 0, 0, 0));
+        }
 
         // Set redraw flag
         dirty = true;
@@ -184,8 +179,13 @@ public class GameTest1MainThread extends Thread {
                             h = hitcircleList.get(i);
                             if (h.active) {
                                 if (h.inCircle(e.getX(), e.getY())) {
-                                    score += (int) (100f * min(1 - (((float) abs(gameEvent.songTime - h.getBeatTime())) / 1000f), 1f));
-                                    scoreText.setText("Score: " + score);
+                                    float scoreRatio = 1 - (abs(((float) (gameEvent.songTime - h.getBeatTime())) / (float) HitMap.startDelay));
+                                    if (scoreRatio > 0.9) {
+                                        scoreRatio = 1f;
+                                    }
+                                    int hitScore = (int) (100f * min(scoreRatio, 1f));
+                                    score += hitScore;
+                                    scoreText.setText("Score: " + score + " +" + hitScore);
                                     h.active = false;
                                 }
                             }
@@ -197,6 +197,24 @@ public class GameTest1MainThread extends Thread {
                     break;
 
                 case MotionEvent.ACTION_MOVE:
+                    // Update the hitcircles
+                    HitCircle h;
+                    for (int i = 0; i < hitcircleList.size(); i++) {
+                        h = hitcircleList.get(i);
+                        if (h.active) {
+                            if (h.inCircle(e.getX(), e.getY())) {
+                                float scoreRatio = 1 - (abs(((float) (gameEvent.songTime - h.getBeatTime())) / (float) HitMap.startDelay));
+                                if (scoreRatio > 0.9) {
+                                    scoreRatio = 1f;
+                                }
+                                int hitScore = (int) (100f * min(scoreRatio, 1f));
+                                score += hitScore;
+                                scoreText.setText("Score: " + score + " +" + hitScore);
+                                h.active = false;
+                            }
+                        }
+                    }
+
                     trace.eventUpdate(e.getX(), e.getY());
                     dirty = true;
                     break;
@@ -256,6 +274,13 @@ public class GameTest1MainThread extends Thread {
                     info = null;
                 }
             }
+        }
+
+        // Update the time
+        System.out.println(song.getPosition() + " " + song.getDuration());
+        if (song.getPosition() < song.getDuration()){
+            songDurationText.setText("Time: " + (song.getPosition() / 1000) + "/" + (song.getDuration() / 1000) + " s");
+            dirty = true;
         }
 
         // Update the tracer particles

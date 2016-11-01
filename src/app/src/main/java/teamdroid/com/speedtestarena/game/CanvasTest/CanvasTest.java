@@ -49,7 +49,7 @@ public class CanvasTest extends SurfaceView implements SurfaceHolder.Callback {
         startCircle = new Circle(0, 0, 100, "#008000");
         pauseCircle2 = new Circle(0, 0, 100, "#C0C0C0");
         startCircle2 = new Circle(0, 0, 100, "#008000");
-        tickText = new Text(0, 0, "", "#C0C0C0");
+        tickText = new Text(0, 0, "", 0xFFC0C0C0);
         curve1 = new CubicBezier(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
         trace = new LineTracer();
 

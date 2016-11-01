@@ -11,17 +11,23 @@ public class Text {
     private float locx;
     private float locy;
     private String text;
-    private Paint p;
+    private Paint p, stkPaint;
 
-    public Text(float x, float y, String t, String c) {
+    public Text(float x, float y, String t, int c) {
         locx = x;
         locy = y;
         text = t;
 
+        // Setup the paint
         p = new Paint();
-        p.setColor(Color.parseColor(c));
-        p.setLinearText(true);
-        p.setTextSize(50f);
+        p.setColor(c);
+        p.setTextSize(35f);
+
+        stkPaint = new Paint();
+        stkPaint.setStyle(Paint.Style.STROKE);
+        stkPaint.setTextSize(35f);
+        stkPaint.setStrokeWidth(8);
+        stkPaint.setColor(Color.BLACK);
     }
 
     // Setters
@@ -55,4 +61,6 @@ public class Text {
     public Paint getP() {
         return p;
     }
+
+    public Paint getStrokePaint() { return stkPaint; }
 }
