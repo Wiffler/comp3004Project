@@ -1,12 +1,9 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import teamdroid.com.speedtestarena.R;
 
 /**
  * Created by Kenny on 2016-10-25.
@@ -18,7 +15,7 @@ public class HitMap {
     public static long endDelay = 100;
 
     // Parser object
-    private static SMParser parser = new SMParser();
+    private static SimParser parser = new SimParser();
 
     // Sound offset
     private long offset = 0;

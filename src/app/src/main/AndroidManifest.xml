@@ -30,13 +30,12 @@
         </activity>
         <activity android:name=".game.CanvasTest.CanvasTestActivity" />
         <activity
-            android:name=".game.GameTest1.GameTest1Activity"
-            android:screenOrientation="landscape">
-        </activity>
+            android:name=".game.MusicGame.MusicGameActivity"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".game.OpenGLESTest.OpenGLESTestActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".game.MusicGame.MusicGameMenuActivity"></activity>
     </application>
 
 </manifest>

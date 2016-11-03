@@ -1,7 +1,6 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 import android.app.Activity;
-import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -16,7 +15,7 @@ import teamdroid.com.speedtestarena.actor.ParticleTracer;
 import teamdroid.com.speedtestarena.graphics.Background;
 import teamdroid.com.speedtestarena.actor.Text;
 import teamdroid.com.speedtestarena.graphics.Renderer;
-import teamdroid.com.speedtestarena.io.GameTest1Event;
+import teamdroid.com.speedtestarena.io.MusicGameEvent;
 import teamdroid.com.speedtestarena.sound.AudioDelayThread;
 import teamdroid.com.speedtestarena.sound.GameAudio;
 import teamdroid.com.speedtestarena.utility.GameTimer;
@@ -29,7 +28,7 @@ import static java.lang.StrictMath.min;
  * Created by Kenny on 2016-10-17.
  */
 
-public class GameTest1MainThread extends Thread {
+public class MusicGameMainThread extends Thread {
     // Constants
     private static int HITCIRCLE_MAX = 64;
 
@@ -50,7 +49,7 @@ public class GameTest1MainThread extends Thread {
 
     // UI, Audio and Timer objects
     private SurfaceHolder surfaceHolder;
-    private GameTest1 gamePanel;
+    private MusicGameView gamePanel;
     public GameAudio song;
     public GameTimer timer;
     public AudioDelayThread audioDelayThread;
@@ -69,7 +68,7 @@ public class GameTest1MainThread extends Thread {
     int songID, simfileID, bgID;
 
     // Constructor(s)
-    public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel) {
+    public MusicGameMainThread(SurfaceHolder surfaceHolder, MusicGameView gamePanel) {
         super();
 
         this.surfaceHolder = surfaceHolder;
@@ -82,7 +81,7 @@ public class GameTest1MainThread extends Thread {
         timer = new GameTimer();
     }
 
-    public GameTest1MainThread(SurfaceHolder surfaceHolder, GameTest1 gamePanel,
+    public MusicGameMainThread(SurfaceHolder surfaceHolder, MusicGameView gamePanel,
                                int songID, int simfileID, int bgID) {
         super();
 
@@ -119,7 +118,7 @@ public class GameTest1MainThread extends Thread {
         // Set the background drawable if id is valid
         if (bgID != 0) {
             bg = new Background(gamePanel.activity, bgID, gamePanel.getWidth(), gamePanel.getHeight());
-            ((GameTest1Activity) gamePanel.activity).setGameBG(gamePanel, bg);
+            ((MusicGameActivity) gamePanel.activity).setGameBG(gamePanel, bg);
         }
 
         // Setup the audio
@@ -157,7 +156,7 @@ public class GameTest1MainThread extends Thread {
 
     // Processes the event queue
     private void handleIO() {
-        GameTest1Event gameEvent;
+        MusicGameEvent gameEvent;
         MotionEvent e;
 
         while (gamePanel.events.size() > 0) {
@@ -236,6 +235,7 @@ public class GameTest1MainThread extends Thread {
             if (h.active) {
                 if (!h.update(song.getPosition())) {
                     h.active = false;
+                    dirty = true;
                 }
                 dirty = true;
             }
@@ -261,6 +261,7 @@ public class GameTest1MainThread extends Thread {
                         h.activate(mapper.spawnLoc[1][info.spawnLocation],
                                    mapper.spawnLoc[0][info.spawnLocation],
                                    info.spawnTime, info.deathTime, info.beatTime);
+                        //System.out.println(info.spawnTime + " " + info.deathTime + " " + info.beatTime);
                         index = i + 1;
                         break;
                     }
@@ -277,7 +278,7 @@ public class GameTest1MainThread extends Thread {
         }
 
         // Update the time
-        System.out.println(song.getPosition() + " " + song.getDuration());
+        //System.out.println(song.getPosition() + " " + song.getDuration());
         if (song.getPosition() < song.getDuration()){
             songDurationText.setText("Time: " + (song.getPosition() / 1000) + "/" + (song.getDuration() / 1000) + " s");
             dirty = true;

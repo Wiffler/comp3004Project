@@ -5,7 +5,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1MainThread;
+import teamdroid.com.speedtestarena.game.MusicGame.MusicGameMainThread;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.graphics.OpenGLES.GLRenderer;
 import teamdroid.com.speedtestarena.io.EventQueue;
@@ -26,7 +26,7 @@ public class OpenGLESTestView extends GLSurfaceView {
     public BitmapLoader textures;
     public EventQueue events;
 
-    private GameTest1MainThread gameThread;
+    private MusicGameMainThread gameThread;
     public static Context activity;
 
     public OpenGLESTestView(Context context) {
@@ -98,7 +98,7 @@ public class OpenGLESTestView extends GLSurfaceView {
         events = new EventQueue();
 
         // Create the game thread
-        gameThread = new GameTest1MainThread(getHolder(), this);
+        gameThread = new MusicGameMainThread(getHolder(), this);
         gameThread.setRunning(true);
         gameThread.start();
 

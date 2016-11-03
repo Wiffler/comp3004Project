@@ -21,7 +21,7 @@ public class GameAudio {
     private volatile MediaPlayer mp = null;
 
     // song info
-    private int songDuration;
+    private int songDuration = 0;
 
     // Manually implement start delay
     private volatile boolean start = false;
@@ -64,7 +64,9 @@ public class GameAudio {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mp.start();
+                            if (mp != null) {
+                                mp.start();
+                            }
                         }
                     },
                     delay);
@@ -90,13 +92,15 @@ public class GameAudio {
             audioLock.lock();
             if (mp.getCurrentPosition() <= 0 && start) {
                 retVal = min((g.getTime() - startTime) - delay, 0l);
+            } else if (!mp.isPlaying()) {
+                retVal = (g.getTime() - startTime);
             } else {
                 retVal = mp.getCurrentPosition();
             }
             audioLock.unlock();
             return retVal;
         } else {
-            return -1;
+            return songDuration + 1;
         }
     }
 

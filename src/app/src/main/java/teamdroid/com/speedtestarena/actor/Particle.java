@@ -1,6 +1,7 @@
-package teamdroid.com.speedtestarena.graphics;
+package teamdroid.com.speedtestarena.actor;
 
 import teamdroid.com.speedtestarena.R;
+import teamdroid.com.speedtestarena.graphics.Texture;
 
 import static java.lang.Math.max;
 

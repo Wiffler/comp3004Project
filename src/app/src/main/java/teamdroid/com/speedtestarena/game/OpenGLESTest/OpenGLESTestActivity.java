@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1;
-
 public class OpenGLESTestActivity extends AppCompatActivity {
 
     private GLSurfaceView glView;

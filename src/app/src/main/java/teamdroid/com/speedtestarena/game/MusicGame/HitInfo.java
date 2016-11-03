@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 /**
  * Created by Kenny on 2016-10-26.

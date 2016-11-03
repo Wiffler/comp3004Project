@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,24 +11,24 @@ import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
-import teamdroid.com.speedtestarena.io.GameTest1Event;
+import teamdroid.com.speedtestarena.io.MusicGameEvent;
 
 /**
  * Created by Kenny on 2016-10-17.
  */
 
-public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
+public class MusicGameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public volatile boolean ready = false;
 
     public Renderer render;
     public BitmapLoader textures;
-    public EventQueue<GameTest1Event> events;
+    public EventQueue<MusicGameEvent> events;
 
-    private GameTest1MainThread gameThread;
+    private MusicGameMainThread gameThread;
     public static Context activity;
 
-    public GameTest1(Context context) {
+    public MusicGameView(Context context) {
         super(context);
         activity = context;
         getHolder().addCallback(this);
@@ -43,21 +43,21 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
         // Create the objects
         render = new Renderer();
         textures = new BitmapLoader();
-        events = new EventQueue<GameTest1Event>();
+        events = new EventQueue<MusicGameEvent>();
 
         // Create the game thread
         /*
-        gameThread = new GameTest1MainThread(getHolder(), this,
+        gameThread = new MusicGameMainThread(getHolder(), this,
                 R.raw.test_sound_file2, R.raw.test_sound_file2_sm, R.drawable.test_sound_file2_bg);
         */
-        /*
-        gameThread = new GameTest1MainThread(getHolder(), this,
+
+        gameThread = new MusicGameMainThread(getHolder(), this,
                 R.raw.test_sound_file3, R.raw.test_sound_file3_sm, R.drawable.test_sound_file3_bg);
-        */
 
-        gameThread = new GameTest1MainThread(getHolder(), this,
+        /*
+        gameThread = new MusicGameMainThread(getHolder(), this,
                 R.raw.test_sound_file4, R.raw.test_sound_file4_sm, R.drawable.test_sound_file4_bg);
-
+        */
         gameThread.setRunning(true);
         gameThread.start();
 
@@ -101,7 +101,7 @@ public class GameTest1 extends SurfaceView implements SurfaceHolder.Callback {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (ready) {
-            events.enqueue(new GameTest1Event(event, gameThread.song.getPosition()));
+            events.enqueue(new MusicGameEvent(event, gameThread.song.getPosition()));
         }
         return true;
     }

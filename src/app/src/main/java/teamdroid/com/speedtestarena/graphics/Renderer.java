@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 
 import teamdroid.com.speedtestarena.actor.Button;
 import teamdroid.com.speedtestarena.actor.HitCircleNeonOverlay;
+import teamdroid.com.speedtestarena.actor.Particle;
 import teamdroid.com.speedtestarena.actor.ShadowedCurve;
 import teamdroid.com.speedtestarena.actor.Circle;
 import teamdroid.com.speedtestarena.actor.CubicBezier;

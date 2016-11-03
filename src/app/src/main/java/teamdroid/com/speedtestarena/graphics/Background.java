@@ -33,14 +33,14 @@ public class Background extends Drawable {
 
         if (adjustRatio) {
             // Adjust the aspect ratio
-            float imageRatio = bitmap.getWidth() / bitmap.getHeight();
+            float imageRatio = ((float) bitmap.getWidth()) / ((float) bitmap.getHeight());
 
             if (dstWidth > dstHeight) {
                 targetWidth = (int) (imageRatio * dstHeight);
                 targetHeight = dstHeight;
             } else {
                 targetWidth = dstWidth;
-                targetHeight = (int) (imageRatio * (dstWidth / imageRatio));
+                targetHeight = (int) (dstWidth / imageRatio);
             }
         } else {
             targetWidth = dstWidth;

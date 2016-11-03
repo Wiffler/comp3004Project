@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -7,17 +7,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1;
 import teamdroid.com.speedtestarena.graphics.Background;
 
-public class GameTest1Activity extends AppCompatActivity {
+public class MusicGameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setFullScreen();
-        setContentView(new GameTest1(this));
+        setContentView(new MusicGameView(this));
     }
 
     @Override
@@ -41,7 +40,7 @@ public class GameTest1Activity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void setGameBG(final GameTest1 surface, final Background bg){
+    public void setGameBG(final MusicGameView surface, final Background bg){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

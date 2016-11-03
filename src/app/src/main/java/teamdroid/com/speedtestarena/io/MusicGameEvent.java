@@ -6,11 +6,11 @@ import android.view.MotionEvent;
  * Created by Kenny on 2016-10-26.
  */
 
-public class GameTest1Event {
+public class MusicGameEvent {
     public MotionEvent e;
     public long songTime;
 
-    public GameTest1Event(MotionEvent e, long songTime) {
+    public MusicGameEvent(MotionEvent e, long songTime) {
         this.e = e;
         this.songTime = songTime;
     }

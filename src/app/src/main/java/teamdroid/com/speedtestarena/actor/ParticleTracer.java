@@ -1,13 +1,9 @@
 package teamdroid.com.speedtestarena.actor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import teamdroid.com.speedtestarena.R;
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1MainThread;
-import teamdroid.com.speedtestarena.graphics.Particle;
 import teamdroid.com.speedtestarena.graphics.Texture;
-import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.math.MathUtil;
 import teamdroid.com.speedtestarena.math.Vector2f;
 

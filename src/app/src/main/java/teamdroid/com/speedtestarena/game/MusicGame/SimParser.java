@@ -1,4 +1,4 @@
-package teamdroid.com.speedtestarena.game.GameTest1;
+package teamdroid.com.speedtestarena.game.MusicGame;
 
 import android.content.Context;
 
@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
  * Created by Kenny on 2016-10-25.
  */
 
-public class SMParser {
+public class SimParser {
 
     // state = 0 : searching for OFFSET
     // state = 1 : searching for BPMS
@@ -20,7 +20,7 @@ public class SMParser {
     // state = 4 : termination state
     private int parseState = 0;
 
-    public SMParser() {}
+    public SimParser() {}
 
     public void readSM(Context context, int resID, HitMap mapper) {
         // Reset the parser state

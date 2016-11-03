@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTestActivity;
-import teamdroid.com.speedtestarena.game.GameTest1.GameTest1Activity;
+import teamdroid.com.speedtestarena.game.MusicGame.MusicGameActivity;
 import teamdroid.com.speedtestarena.game.OpenGLESTest.OpenGLESTestActivity;
 
 public class PlayActivity extends AppCompatActivity {
@@ -43,7 +43,7 @@ public class PlayActivity extends AppCompatActivity {
                 if ((String) listItem == "Canvas Test") {
                     startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
                 } else if ((String) listItem == "Game Test 1") {
-                    startActivity(new Intent(PlayActivity.this, GameTest1Activity.class));
+                    startActivity(new Intent(PlayActivity.this, MusicGameActivity.class));
                 } else if ((String) listItem == "OpenGL ES Test 1") {
                     startActivity(new Intent(PlayActivity.this, OpenGLESTestActivity.class));
                 }
