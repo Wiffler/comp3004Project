@@ -12,6 +12,7 @@ import android.widget.ListView;
 import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTestActivity;
 import teamdroid.com.speedtestarena.game.MusicGame.MusicGameMenuActivity;
 import teamdroid.com.speedtestarena.game.OpenGLESTest.OpenGLESTestActivity;
+import teamdroid.com.speedtestarena.game.TypingGame.TypingGame;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -27,7 +28,7 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create array adapter
-        String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1"};
+        String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1", "Type it!"};
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.textview_play_menu, mylist);
 
         // Create the list view and set the adapter
@@ -46,6 +47,8 @@ public class PlayActivity extends AppCompatActivity {
                     startActivity(new Intent(PlayActivity.this, MusicGameMenuActivity.class));
                 } else if ((String) listItem == "OpenGL ES Test 1") {
                     startActivity(new Intent(PlayActivity.this, OpenGLESTestActivity.class));
+                } else if ((String) listItem == "Type it!") {
+                    startActivity(new Intent(PlayActivity.this, TypingGame.class));
                 }
             }
         });

@@ -1,11 +1,13 @@
 package teamdroid.com.speedtestarena;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,5 +31,20 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfiguration) {
+        super .onConfigurationChanged(newConfiguration);
+
+        String s = "";
+
+        if(newConfiguration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            s = "Speed Test Arena is on Landscape Orientation\n";
+        } else if (newConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            s = "Speed Test Arena is on Portrait Orientation\n";
+        }
+
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 }

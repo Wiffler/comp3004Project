@@ -38,6 +38,9 @@
             android:name=".game.OpenGLESTest.OpenGLESTestActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".game.MusicGame.MusicGameMenuActivity" />
+        <activity
+            android:name=".game.TypingGame.TypingGame">
+        </activity>
     </application>
 
 </manifest>
