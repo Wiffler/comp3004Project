@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import teamdroid.com.speedtestarena.game.CanvasTest.CanvasTestActivity;
-import teamdroid.com.speedtestarena.game.MusicGame.MusicGameActivity;
+import teamdroid.com.speedtestarena.game.MusicGame.MusicGameMenuActivity;
 import teamdroid.com.speedtestarena.game.OpenGLESTest.OpenGLESTestActivity;
 
 public class PlayActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play);
+        setContentView(R.layout.activity_play_menu);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -28,7 +28,7 @@ public class PlayActivity extends AppCompatActivity {
 
         // Create array adapter
         String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1"};
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_play_textview, mylist);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.textview_play_menu, mylist);
 
         // Create the list view and set the adapter
         gameSelection = (ListView) findViewById(R.id.GameSelection_ListView);
@@ -43,7 +43,7 @@ public class PlayActivity extends AppCompatActivity {
                 if ((String) listItem == "Canvas Test") {
                     startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
                 } else if ((String) listItem == "Game Test 1") {
-                    startActivity(new Intent(PlayActivity.this, MusicGameActivity.class));
+                    startActivity(new Intent(PlayActivity.this, MusicGameMenuActivity.class));
                 } else if ((String) listItem == "OpenGL ES Test 1") {
                     startActivity(new Intent(PlayActivity.this, OpenGLESTestActivity.class));
                 }

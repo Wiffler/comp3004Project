@@ -11,9 +11,20 @@ import teamdroid.com.speedtestarena.graphics.Background;
 
 public class MusicGameActivity extends AppCompatActivity {
 
+    private int songID, simID, bgID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the arguments from the bundle
+        Bundle b = getIntent().getExtras();
+        int value = -1; // or other values
+        if (b != null) {
+            songID = b.getInt("AudioID");
+            simID = b.getInt("SimID");
+            bgID = b.getInt("BGID");
+        }
 
         setFullScreen();
         setContentView(new MusicGameView(this));
@@ -51,6 +62,19 @@ public class MusicGameActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // Getters
+    public int getSongID() {
+        return songID;
+    }
+
+    public int getSimID() {
+        return simID;
+    }
+
+    public int getBGID() {
+        return bgID;
     }
 
     public void setFullScreen() {

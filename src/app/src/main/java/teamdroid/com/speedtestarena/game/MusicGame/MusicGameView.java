@@ -19,6 +19,8 @@ import teamdroid.com.speedtestarena.io.MusicGameEvent;
 
 public class MusicGameView extends SurfaceView implements SurfaceHolder.Callback {
 
+    public MusicGameActivity activity;
+
     public volatile boolean ready = false;
 
     public Renderer render;
@@ -26,11 +28,11 @@ public class MusicGameView extends SurfaceView implements SurfaceHolder.Callback
     public EventQueue<MusicGameEvent> events;
 
     private MusicGameMainThread gameThread;
-    public static Context activity;
 
+    // Constructors
     public MusicGameView(Context context) {
         super(context);
-        activity = context;
+        activity = (MusicGameActivity) context;
         getHolder().addCallback(this);
         //setFocusable(true);
     }
@@ -46,18 +48,8 @@ public class MusicGameView extends SurfaceView implements SurfaceHolder.Callback
         events = new EventQueue<MusicGameEvent>();
 
         // Create the game thread
-        /*
         gameThread = new MusicGameMainThread(getHolder(), this,
-                R.raw.test_sound_file2, R.raw.test_sound_file2_sm, R.drawable.test_sound_file2_bg);
-        */
-
-        gameThread = new MusicGameMainThread(getHolder(), this,
-                R.raw.test_sound_file3, R.raw.test_sound_file3_sm, R.drawable.test_sound_file3_bg);
-
-        /*
-        gameThread = new MusicGameMainThread(getHolder(), this,
-                R.raw.test_sound_file4, R.raw.test_sound_file4_sm, R.drawable.test_sound_file4_bg);
-        */
+                activity.getSongID(), activity.getSimID(), activity.getBGID());
         gameThread.setRunning(true);
         gameThread.start();
 
