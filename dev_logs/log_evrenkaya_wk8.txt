@@ -1,0 +1,1 @@
+- Created new Google Cloud Module to handle storing user data
