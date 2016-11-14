@@ -28,7 +28,11 @@ public class PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create array adapter
-        String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1", "Type it!"};
+        //String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1", "Type it!"};
+
+        // Temp adapter for deliverable 2
+        String[] mylist = {"Tap Tap", "Keyboard Warriors"};
+
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.textview_play_menu, mylist);
 
         // Create the list view and set the adapter
@@ -41,6 +45,7 @@ public class PlayActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object listItem = gameSelection.getItemAtPosition(position);
 
+                /*
                 if ((String) listItem == "Canvas Test") {
                     startActivity(new Intent(PlayActivity.this, CanvasTestActivity.class));
                 } else if ((String) listItem == "Game Test 1") {
@@ -48,6 +53,13 @@ public class PlayActivity extends AppCompatActivity {
                 } else if ((String) listItem == "OpenGL ES Test 1") {
                     startActivity(new Intent(PlayActivity.this, OpenGLESTestActivity.class));
                 } else if ((String) listItem == "Type it!") {
+                    startActivity(new Intent(PlayActivity.this, TypingGame.class));
+                }
+                */
+
+                if ((String) listItem == "Tap Tap") {
+                    startActivity(new Intent(PlayActivity.this, MusicGameMenuActivity.class));
+                } else if ((String) listItem == "Keyboard Warriors") {
                     startActivity(new Intent(PlayActivity.this, TypingGame.class));
                 }
             }

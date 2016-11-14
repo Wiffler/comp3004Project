@@ -34,17 +34,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    // debug testing for button stacking on top of each other
     public void onConfigurationChanged(Configuration newConfiguration) {
         super .onConfigurationChanged(newConfiguration);
 
         String s = "";
 
         if(newConfiguration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            s = "Speed Test Arena is on Landscape Orientation\n";
+            //s = "Speed Test Arena is on Landscape Orientation\n";
         } else if (newConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            s = "Speed Test Arena is on Portrait Orientation\n";
+            //s = "Speed Test Arena is on Portrait Orientation\n";
         }
 
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 }

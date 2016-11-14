@@ -24,14 +24,16 @@ public class SentenceGenerator {
     public String sentenceGenerator(int words ){
         String sentence;
 
-        if (words == 4) {
+        /* Generate sentence for level easy */
+        if (words == 1) {
             sentence = nounWords[rand()];
             char c = sentence.charAt(0);
             sentence = sentence.replace(c, Character.toUpperCase(c));
             sentence += SPACE + (verbWords[rand()] + SPACE + prepositionWords[rand()]);
             sentence += SPACE + nounWords[rand()];
             sentence += PERIOD;
-        } else if (words == 7){
+          /* Generate sentence for level medium */
+        } else if (words == 2){
             sentence = artWords[rand()];
             char c = sentence.charAt(0);
             sentence = sentence.replace(c, Character.toUpperCase(c));
@@ -40,6 +42,7 @@ public class SentenceGenerator {
             sentence += (verbWords[rand()] + SPACE + prepositionWords[rand()]);
             sentence += (SPACE + artWords[rand()] + SPACE + nounWords[rand()]);
             sentence += PERIOD;
+          /* Generate sentence for level hard */
         } else {
             sentence = artWords[rand()];
             char c = sentence.charAt(0);
