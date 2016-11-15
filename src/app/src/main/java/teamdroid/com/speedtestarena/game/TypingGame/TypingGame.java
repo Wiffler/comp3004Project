@@ -410,10 +410,10 @@ public class TypingGame extends AppCompatActivity {
                 testString = mainTextView.getText().toString();
 
                 // compare above two strings
-                if (inputString.equalsIgnoreCase(testString)) {
+                if (inputString.trim().equalsIgnoreCase(testString)) {
                     // show correct response
                     String outputMessage = " Correct";
-                    Toast.makeText(getApplicationContext(), outputMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), outputMessage, Toast.LENGTH_SHORT).show();
                     // enable player to reset timer
                     removeDialog(GAMEPLAY_DIALOG);
                     showDialog(GAMEPLAY_DIALOG);
