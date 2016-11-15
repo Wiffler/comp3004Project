@@ -410,7 +410,7 @@ public class TypingGame extends AppCompatActivity {
                 testString = mainTextView.getText().toString();
 
                 // compare above two strings
-                if (inputString.equals(testString)) {
+                if (inputString.equalsIgnoreCase(testString)) {
                     // show correct response
                     String outputMessage = " Correct";
                     Toast.makeText(getApplicationContext(), outputMessage, Toast.LENGTH_LONG).show();
