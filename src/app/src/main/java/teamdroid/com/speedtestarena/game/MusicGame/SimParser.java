@@ -28,33 +28,42 @@ public class SimParser {
 
         // Read text from .sm file
         InputStream in = context.getResources().openRawResource(resID);
-        StringBuilder text = new StringBuilder();
 
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
             int measureCounter = 0;
 
+            System.out.println("Starting parser...");
+
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("#OFFSET:")) {
-                    //System.out.println(line.substring(8, line.length() - 1));
-                    mapper.setOffset((long) (Float.parseFloat(line.substring(8, line.length() - 1)) * 1000));
-                    parseState += 1;
+                    // Check the parser state
+                    if (parseState == 0) {
+                        mapper.setOffset((long) (Float.parseFloat(line.substring(8, line.length() - 1)) * 1000));
+                        parseState += 1;
+                        System.out.println(line.substring(8, line.length() - 1));
+                        System.out.println("PARSE STATE: " + parseState);
+                    }
                 }
                 else if (line.startsWith("#BPMS:")) {
-                    // hardcode for now
-                    //mapper.setBPMS(Double.parseDouble(line.substring(12, 19)));
-                    parseBPMS(line, mapper);
-                    parseState += 1;
+                    // Check the parser state
+                    if (parseState == 1) {
+                        parseBPMS(line, mapper);
+                        parseState += 1;
+                        System.out.println("PARSE STATE: " + parseState);
+                    }
                 }
                 else if (line.startsWith("#NOTES:")) {
                     parseState += 1;
+                    System.out.println("PARSE STATE: " + parseState);
                 }
                 else if (line.matches("^[01234MKLF][01234MKLF][01234MKLF][01234MKLF]") && (parseState == 3)) {
                     readNoteCode(line, mapper);
                     measureCounter += 1;
                 }
                 else if (line.startsWith(",") && (parseState == 3)) {
+                    System.out.println(measureCounter);
                     mapper.addMeasureMap(measureCounter);
                     measureCounter = 0;
                 }

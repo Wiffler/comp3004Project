@@ -20,7 +20,7 @@ public class MusicGameMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_music_game_menu);
 
         // Create array adapter
-        String[] mylist = {"test_sound_file2", "test_sound_file3", "test_sound_file4"};
+        String[] mylist = {"test_sound_file2", "test_sound_file3", "test_sound_file4", "test_sound_file5"};
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.textview_play_menu, mylist);
 
         // Create the listview
@@ -52,6 +52,10 @@ public class MusicGameMenuActivity extends AppCompatActivity {
                     startMusicGameActivity(R.raw.test_sound_file4,
                             R.raw.test_sound_file4_sm,
                             R.drawable.test_sound_file4_bg);
+                } else if (listItem == "test_sound_file5") {
+                    startMusicGameActivity(R.raw.test_sound_file5,
+                            R.raw.test_sound_file5_sim,
+                            R.drawable.test_sound_file5_bg);
                 }
             }
         });

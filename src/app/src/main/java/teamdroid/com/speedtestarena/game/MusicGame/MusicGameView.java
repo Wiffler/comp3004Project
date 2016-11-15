@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import teamdroid.com.speedtestarena.R;
 import teamdroid.com.speedtestarena.graphics.Renderer;
 import teamdroid.com.speedtestarena.graphics.BitmapLoader;
 import teamdroid.com.speedtestarena.io.EventQueue;
