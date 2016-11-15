@@ -1,0 +1,9 @@
+(1) Typing game prepped for demo.
+(2) Changed menu names.
+(3) Added demo test file.
+(4) Updated parser for .ssc files.
+
+TODO:
+(5) Implement parser for dictionary database file. (Alan)
+(6) Implement score server and local score storage/user info (Evren for Serverside code and setting up the server) (Alan and Kenny for android local)
+(7) Improve UI visuals and add game settings. (Alan and Kenny)
