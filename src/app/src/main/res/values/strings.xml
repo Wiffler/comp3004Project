@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SpeedTestArena</string>
+    <string name="app_name">Speed Test Arena</string>
     <string name="title_activity_play">PlayActivity</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_show_score">Show Score</string>

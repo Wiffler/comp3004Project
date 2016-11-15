@@ -31,7 +31,7 @@ public class PlayActivity extends AppCompatActivity {
         //String[] mylist = {"Canvas Test", "Game Test 1", "OpenGL ES Test 1", "Type it!"};
 
         // Temp adapter for deliverable 2
-        String[] mylist = {"Tap Tap", "Keyboard Warriors"};
+        String[] mylist = {"Rhythm Tap", "Typing Game"};
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.textview_play_menu, mylist);
 
@@ -57,9 +57,9 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 */
 
-                if ((String) listItem == "Tap Tap") {
+                if ((String) listItem == "Rhythm Tap") {
                     startActivity(new Intent(PlayActivity.this, MusicGameMenuActivity.class));
-                } else if ((String) listItem == "Keyboard Warriors") {
+                } else if ((String) listItem == "Typing Game") {
                     startActivity(new Intent(PlayActivity.this, TypingGame.class));
                 }
             }
