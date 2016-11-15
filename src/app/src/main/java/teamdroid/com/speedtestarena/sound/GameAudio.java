@@ -90,12 +90,16 @@ public class GameAudio {
 
         if (mp != null) {
             audioLock.lock();
-            if (mp.getCurrentPosition() <= 0 && start) {
-                retVal = min((g.getTime() - startTime) - delay, 0l);
-            } else if (!mp.isPlaying()) {
-                retVal = (g.getTime() - startTime);
-            } else {
-                retVal = mp.getCurrentPosition();
+            try {
+                if (mp.getCurrentPosition() <= 0 && start) {
+                    retVal = min((g.getTime() - startTime) - delay, 0l);
+                } else if (!mp.isPlaying()) {
+                    retVal = (g.getTime() - startTime);
+                } else {
+                    retVal = mp.getCurrentPosition();
+                }
+            } catch (Exception e) {
+                retVal = Long.MAX_VALUE;
             }
             audioLock.unlock();
             return retVal;

@@ -34,7 +34,7 @@ public class SimParser {
             String line;
             int measureCounter = 0;
 
-            System.out.println("Starting parser...");
+            //System.out.println("Starting parser...");
 
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("#OFFSET:")) {
@@ -42,8 +42,8 @@ public class SimParser {
                     if (parseState == 0) {
                         mapper.setOffset((long) (Float.parseFloat(line.substring(8, line.length() - 1)) * 1000));
                         parseState += 1;
-                        System.out.println(line.substring(8, line.length() - 1));
-                        System.out.println("PARSE STATE: " + parseState);
+                        //System.out.println(line.substring(8, line.length() - 1));
+                        //System.out.println("PARSE STATE: " + parseState);
                     }
                 }
                 else if (line.startsWith("#BPMS:")) {
@@ -51,19 +51,19 @@ public class SimParser {
                     if (parseState == 1) {
                         parseBPMS(line, mapper);
                         parseState += 1;
-                        System.out.println("PARSE STATE: " + parseState);
+                        //System.out.println("PARSE STATE: " + parseState);
                     }
                 }
                 else if (line.startsWith("#NOTES:")) {
                     parseState += 1;
-                    System.out.println("PARSE STATE: " + parseState);
+                    //System.out.println("PARSE STATE: " + parseState);
                 }
                 else if (line.matches("^[01234MKLF][01234MKLF][01234MKLF][01234MKLF]") && (parseState == 3)) {
                     readNoteCode(line, mapper);
                     measureCounter += 1;
                 }
                 else if (line.startsWith(",") && (parseState == 3)) {
-                    System.out.println(measureCounter);
+                    //System.out.println(measureCounter);
                     mapper.addMeasureMap(measureCounter);
                     measureCounter = 0;
                 }
